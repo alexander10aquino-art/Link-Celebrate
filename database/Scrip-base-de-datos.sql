@@ -16,35 +16,35 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `datalles_invitacion`
+-- Table structure for table `detalles_invitacion`
 --
 
-DROP TABLE IF EXISTS `datalles_invitacion`;
+DROP TABLE IF EXISTS `detalles_invitacion`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `datalles_invitacion` (
+CREATE TABLE `detalles_invitacion` (
   `detalle_id` int NOT NULL AUTO_INCREMENT,
   `invitacion_id` int NOT NULL,
   `musica_url` varchar(250) DEFAULT NULL,
   `ubicacion_waze_url` varchar(255) DEFAULT NULL,
   `ubicacion_maps_url` varchar(255) DEFAULT NULL,
-  `frase_bienvenita` text,
+  `frase_bienvenida` text,
   `vestimenta_sugerida` varchar(100) DEFAULT NULL,
   `link_mesa_regalo` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`detalle_id`),
   UNIQUE KEY `invitacion_id` (`invitacion_id`),
-  CONSTRAINT `datalles_invitacion_ibfk_1` FOREIGN KEY (`invitacion_id`) REFERENCES `invitaciones` (`invitacion_id`) ON DELETE CASCADE
+  CONSTRAINT `detalles_invitacion_ibfk_1` FOREIGN KEY (`invitacion_id`) REFERENCES `invitaciones` (`invitacion_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `datalles_invitacion`
+-- Dumping data for table `detalles_invitacion`
 --
 
-LOCK TABLES `datalles_invitacion` WRITE;
-/*!40000 ALTER TABLE `datalles_invitacion` DISABLE KEYS */;
-INSERT INTO `datalles_invitacion` VALUES (1,1,'https://spotify.com/track/dancing-queen','https://waze.com/ul/hb5ee99','https://maps.google.com/xv-valerie','Una noche mágica que guardar en el corazón.','Gala / Vestido Largo','Lluvia de sobres.');
-/*!40000 ALTER TABLE `datalles_invitacion` ENABLE KEYS */;
+LOCK TABLES `detalles_invitacion` WRITE;
+/*!40000 ALTER TABLE `detalles_invitacion` DISABLE KEYS */;
+INSERT INTO `detalles_invitacion` VALUES (1,1,'https://spotify.com/track/dancing-queen','https://waze.com/ul/hb5ee99','https://maps.google.com/xv-valerie','Una noche mágica que guardar en el corazón.','Gala / Vestido Largo','Lluvia de sobres.');
+/*!40000 ALTER TABLE `detalles_invitacion` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -286,8 +286,8 @@ begin
     insert into pagos (invitacion_id, monto, metodo_pago, referencia_transaccion)
     values (v_invitacion_id, p_monto, p_metodo_pago, p_referencia);
     
-    -- Ajustado al nombre 'datalles_invitacion'
-    insert into datalles_invitacion (invitacion_id) 
+
+    insert into detalles_invitacion (invitacion_id)
     values (v_invitacion_id);
     
     select v_invitacion_id as nuevo_evento_id;
@@ -339,13 +339,13 @@ CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_guardar_detalles_invitac
     in p_regalos varchar(255)
 )
 begin
-    insert into datalles_invitacion (invitacion_id, musica_url, ubicacion_waze_url, ubicacion_maps_url, frase_bienvenita, vestimenta_sugerida, link_mesa_regalo)
+    insert into detalles_invitacion (invitacion_id, musica_url, ubicacion_waze_url, ubicacion_maps_url, frase_bienvenida, vestimenta_sugerida, link_mesa_regalo)
     values (p_invitacion_id, p_musica_url, p_waze_url, p_maps_url, p_frase, p_vestimenta, p_regalos)
     on duplicate key update
         musica_url = p_musica_url,
         ubicacion_waze_url = p_waze_url,
         ubicacion_maps_url = p_maps_url,
-        frase_bienvenita = p_frase,
+        frase_bienvenida = p_frase,
         vestimenta_sugerida = p_vestimenta,
         link_mesa_regalo = p_regalos;
 end ;;
@@ -461,11 +461,11 @@ begin
         d.musica_url,
         d.ubicacion_waze_url,
         d.ubicacion_maps_url,
-        d.frase_bienvenita, -- Tu columna corregida
+        d.frase_bienvenida, -- Tu columna corregida
         d.vestimenta_sugerida,
         d.link_mesa_regalo   -- Tu columna corregida
     from invitaciones i
-    left join datalles_invitacion d on i.invitacion_id = d.invitacion_id
+    left join detalles_invitacion d on i.invitacion_id = d.invitacion_id
     where i.slug_url = p_slug_url;
 end ;;
 DELIMITER ;
