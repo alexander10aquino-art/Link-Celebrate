@@ -1,0 +1,108 @@
+/* ==========================================================================
+   ESTILOS DEL DASHBOARD / PANEL DE CONTROL - LINK & CELEBRATE
+   ========================================================================== */
+
+:root {
+    --primary-color: #D4AF37;       /* Dorado Celebración */
+    --primary-hover: #B89320;
+    --secondary-color: #1E293B;     /* Azul Noche Sidebar */
+    --secondary-hover: #0F172A;
+    --bg-body: #F8FAFC;              /* Fondo claro gris/azul */
+    --text-dark: #0F172A;
+    --text-muted: #64748B;
+    --white: #FFFFFF;
+}
+
+body {
+    background-color: var(--bg-body) !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--text-dark);
+}
+
+/* Sidebar / Barra Lateral */
+.sidebar {
+    background-color: var(--secondary-color) !important;
+    min-height: 100vh;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar .brand-title {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.sidebar .nav-link {
+    color: #CBD5E1;
+    font-weight: 500;
+    padding: 10px 16px;
+    border-radius: 10px;
+    transition: all 0.25s ease;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.06);
+    transform: translateX(4px);
+}
+
+.sidebar .nav-link.active {
+    color: var(--primary-color);
+    background-color: rgba(212, 175, 55, 0.12);
+    font-weight: 700;
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Tarjetas Informativas / Stats */
+.stat-card {
+    background-color: var(--white);
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Tabla de Invitados (RSVP) */
+.card-table {
+    background-color: var(--white);
+    border: 1px solid #E2E8F0;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.table thead {
+    background-color: #F1F5F9;
+}
+
+.table th {
+    color: var(--secondary-color);
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid #E2E8F0;
+}
+
+.table td {
+    vertical-align: middle;
+}
+
+/* Botones Personalizados */
+.btn-warning-custom {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--secondary-color) !important;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-warning-custom:hover {
+    background-color: var(--primary-hover) !important;
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}

@@ -1,0 +1,110 @@
+/* ==========================================================================
+   PALETA DE COLORES Y ESTILOS DE HOME - LINK & CELEBRATE
+   ========================================================================== */
+
+:root {
+    --primary-color: #D4AF37;       /* Dorado Celebración */
+    --primary-hover: #B89320;       /* Dorado Oscuro */
+    --secondary-color: #1E293B;     /* Azul Noche Premium */
+    --secondary-hover: #0F172A;     /* Azul Noche Profundo */
+    --accent-color: #F472B6;        /* Rosa Champán */
+    --accent-hover: #DB2777;        /* Rosa Intenso */
+    --bg-light: #F8FAFC;            /* Fondo Claro */
+    --text-dark: #0F172A;           /* Texto Principal */
+    --text-muted: #64748B;          /* Texto Secundario */
+    --white: #FFFFFF;
+    --card-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Base Body */
+body {
+    background-color: var(--bg-light) !important;
+    color: var(--text-dark) !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar Personalizado */
+.navbar-custom {
+    background-color: var(--secondary-color) !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.navbar-custom .navbar-brand {
+    color: var(--primary-color) !important;
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.navbar-custom .nav-link {
+    color: #E2E8F0 !important;
+}
+
+.navbar-custom .nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--bg-light) 100%);
+}
+
+/* Botón Azul Noche (Principal - Explorar Catálogo) */
+.btn-secondary-dark-custom {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: var(--white) !important;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(30, 41, 59, 0.25);
+}
+
+.btn-secondary-dark-custom:hover {
+    background-color: var(--secondary-hover) !important;
+    border-color: var(--secondary-hover) !important;
+    color: var(--primary-color) !important; /* Texto dorado en hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(30, 41, 59, 0.35);
+}
+
+/* Botón Delineado Azul Noche (Secundario - Crear Mi Evento) */
+.btn-outline-dark-custom {
+    background-color: transparent !important;
+    border: 2px solid var(--secondary-color) !important;
+    color: var(--secondary-color) !important;
+    font-weight: 600;
+    padding: 12px 28px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-dark-custom:hover {
+    background-color: var(--secondary-color) !important;
+    color: var(--white) !important;
+    transform: translateY(-2px);
+}
+
+/* Tarjetas e Íconos */
+.card-custom {
+    background: var(--white) !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 12px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-custom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.12);
+}
+
+.title-gold {
+    color: var(--primary-color) !important;
+}
+
+.text-secondary-dark {
+    color: var(--secondary-color) !important;
+}

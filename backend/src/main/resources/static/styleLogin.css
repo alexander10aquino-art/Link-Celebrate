@@ -1,0 +1,62 @@
+/* ==========================================================================
+   ESTILOS DE LOGIN - LINK & CELEBRATE
+   ========================================================================== */
+
+:root {
+    --primary-color: #D4AF37;       /* Dorado Celebración */
+    --primary-hover: #B89320;
+    --secondary-color: #1E293B;     /* Azul Noche */
+    --secondary-hover: #0F172A;
+    --bg-light: #F8FAFC;
+    --text-dark: #0F172A;
+    --white: #FFFFFF;
+}
+
+body {
+    background-color: var(--bg-light) !important;
+    color: var(--text-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+/* Tarjeta centrada con tamaño fijo */
+.login-card {
+    background: var(--white) !important;
+    border: 1px solid #E2E8F0 !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08) !important;
+    width: 100%;
+    max-width: 420px;
+    padding: 2.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+.brand-icon {
+    color: var(--primary-color) !important;
+    font-size: 2.5rem;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25) !important;
+}
+
+/* Botón de Iniciar Sesión */
+.btn-login {
+    background-color: var(--secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    color: var(--white) !important;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+    background-color: var(--secondary-hover) !important;
+    border-color: var(--secondary-hover) !important;
+    color: var(--primary-color) !important;
+}
