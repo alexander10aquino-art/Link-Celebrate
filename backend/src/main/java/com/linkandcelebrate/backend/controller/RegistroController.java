@@ -21,14 +21,18 @@ public class RegistroController {
 
     @PostMapping("/registro")
     public String registrarUsuario(
-            @RequestParam("nombreCompleto") String nombreCompleto,
+            @RequestParam(value = "nombreCompleto", required = false) String nombreCompleto,
+            @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam("email") String email,
-            @RequestParam("username") String username,
             @RequestParam("password") String password,
+            @RequestParam(value = "telefono", required = false) String telefono,
             Model model) {
 
-        if (usuariosService.existeUsername(username)) {
-            model.addAttribute("error", "El nombre de usuario ya está en uso.");
+        // Si el HTML envía 'nombreCompleto' usa ese, si no, usa 'nombre'
+        String nombreFinal = (nombreCompleto != null && !nombreCompleto.isEmpty()) ? nombreCompleto : nombre;
+
+        if (nombreFinal == null || nombreFinal.isEmpty()) {
+            model.addAttribute("error", "El campo nombre es obligatorio.");
             return "registro";
         }
 
@@ -37,7 +41,7 @@ public class RegistroController {
             return "registro";
         }
 
-        usuariosService.registrarUsuario(nombreCompleto, email, username, password);
+        usuariosService.registrarUsuario(nombreFinal, email, password, telefono);
 
         return "redirect:/login?exitoRegistro";
     }

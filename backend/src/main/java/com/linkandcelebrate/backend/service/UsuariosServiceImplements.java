@@ -5,7 +5,7 @@ import com.linkandcelebrate.backend.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UserDetailsService; // <-- IMPORTANTE
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,22 +23,17 @@ public class UsuariosServiceImplements implements UsuariosService, UserDetailsSe
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean existeUsername(String username) {
-        return usuariosRepository.existsByUsername(username);
-    }
-
-    @Override
     public boolean existeEmail(String email) {
-        return usuariosRepository.existsByEmail(email);
+        return usuariosRepository.existsByGmail(email);
     }
 
     @Override
-    public void registrarUsuario(String nombreCompleto, String email, String username, String passwordRaw) {
+    public void registrarUsuario(String nombreCompleto, String email, String passwordRaw, String telefono) {
         Usuarios usuario = new Usuarios();
-        usuario.setNombreCompleto(nombreCompleto);
-        usuario.setEmail(email);
-        usuario.setUsername(username);
-        usuario.setPassword(passwordEncoder.encode(passwordRaw));
+        usuario.setNombre(nombreCompleto);
+        usuario.setGmail(email);
+        usuario.setContrasena(passwordEncoder.encode(passwordRaw));
+        usuario.setTelefono(telefono != null ? telefono : "+50200000000");
 
         usuariosRepository.save(usuario);
     }
@@ -55,6 +50,9 @@ public class UsuariosServiceImplements implements UsuariosService, UserDetailsSe
 
     @Override
     public void saveUsuario(Usuarios usuario) {
+        if (usuario.getContrasena() != null && !usuario.getContrasena().startsWith("$2a$")) {
+            usuario.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+        }
         usuariosRepository.save(usuario);
     }
 
@@ -68,14 +66,15 @@ public class UsuariosServiceImplements implements UsuariosService, UserDetailsSe
         usuariosRepository.deleteById(id);
     }
 
+    // Spring Security valida contra el campo gmail
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuarios usuario = usuariosRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+    public UserDetails loadUserByUsername(String gmail) throws UsernameNotFoundException {
+        Usuarios usuario = usuariosRepository.findByGmail(gmail)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con el correo: " + gmail));
 
         return new User(
-                usuario.getUsername(),
-                usuario.getPassword(),
+                usuario.getGmail(),
+                usuario.getContrasena(),
                 Collections.emptyList()
         );
     }

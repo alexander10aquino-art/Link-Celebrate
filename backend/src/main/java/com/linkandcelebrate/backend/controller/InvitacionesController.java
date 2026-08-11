@@ -10,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDateTime; // Importante para la fecha
 import java.util.List;
 
 @Controller
@@ -52,7 +53,7 @@ public class InvitacionesController {
     @PostMapping("/crear")
     public String crearInvitacion(RedirectAttributes redirectAttributes,
                                   @Valid @RequestParam String titulo,
-                                  @Valid @RequestParam String descripcion,
+                                  // Parámetro 'descripcion' eliminado
                                   @Valid @RequestParam String fechaEvento,
                                   @Valid @RequestParam String planTipo, // BASIC, PREMIUM, VIP
                                   @Valid @RequestParam Integer fkIdUsuario,
@@ -60,8 +61,10 @@ public class InvitacionesController {
 
         Invitaciones newInvitacion = new Invitaciones();
         newInvitacion.setTitulo(titulo);
-        newInvitacion.setDescripcion(descripcion);
-        newInvitacion.setFechaEvento(fechaEvento);
+
+        // Convertimos el texto que viene del HTML a una Fecha Real de Java
+        newInvitacion.setFechaEvento(LocalDateTime.parse(fechaEvento));
+
         newInvitacion.setPlanTipo(planTipo);
         newInvitacion.setFkIdUsuario(fkIdUsuario);
         newInvitacion.setFkIdPlantilla(fkIdPlantilla);
@@ -78,7 +81,7 @@ public class InvitacionesController {
     public String editarInvitacion(RedirectAttributes redirectAttributes,
                                    @Valid @RequestParam Integer idInvitacion,
                                    @Valid @RequestParam String titulo,
-                                   @Valid @RequestParam String descripcion,
+                                   // Parámetro 'descripcion' eliminado
                                    @Valid @RequestParam String fechaEvento,
                                    @Valid @RequestParam String planTipo,
                                    @Valid @RequestParam Integer fkIdUsuario,
@@ -86,8 +89,10 @@ public class InvitacionesController {
 
         Invitaciones newInvitacion = new Invitaciones();
         newInvitacion.setTitulo(titulo);
-        newInvitacion.setDescripcion(descripcion);
-        newInvitacion.setFechaEvento(fechaEvento);
+
+        // CORRECCIÓN: Parseamos la fecha y eliminamos setDescripcion()
+        newInvitacion.setFechaEvento(LocalDateTime.parse(fechaEvento));
+
         newInvitacion.setPlanTipo(planTipo);
         newInvitacion.setFkIdUsuario(fkIdUsuario);
         newInvitacion.setFkIdPlantilla(fkIdPlantilla);

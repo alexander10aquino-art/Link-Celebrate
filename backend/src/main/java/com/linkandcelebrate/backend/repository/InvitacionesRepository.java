@@ -8,6 +8,8 @@ import java.util.List;
 
 @Repository
 public interface InvitacionesRepository extends JpaRepository<Invitaciones, Integer> {
+
+    // Este nombre coincide EXACTAMENTE con tu campo private Integer fkIdUsuario;
     List<Invitaciones> findByFkIdUsuario(Integer fkIdUsuario);
-    List<Invitaciones> findByPlanTipo(String planTipo);
+
 }

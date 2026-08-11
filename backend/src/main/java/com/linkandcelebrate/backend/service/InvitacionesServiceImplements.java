@@ -50,7 +50,7 @@ public class InvitacionesServiceImplements implements InvitacionesService {
     public Invitaciones updateInvitacion(Integer id, Invitaciones invitacion) {
         Invitaciones existente = getInvitacionById(id);
         existente.setTitulo(invitacion.getTitulo());
-        existente.setDescripcion(invitacion.getDescripcion());
+        // ¡Se eliminó la línea de setDescripcion!
         existente.setFechaEvento(invitacion.getFechaEvento());
         existente.setPlanTipo(invitacion.getPlanTipo());
         existente.setFkIdUsuario(invitacion.getFkIdUsuario());
@@ -82,7 +82,7 @@ public class InvitacionesServiceImplements implements InvitacionesService {
         return VipDashboardDTO.builder()
                 .idInvitacion(inv.getIdInvitacion())
                 .tituloEvento(inv.getTitulo())
-                .fechaEvento(inv.getFechaEvento())
+                .fechaEvento(inv.getFechaEvento().toString())
                 .totalInvitados(lista.size())
                 .totalConfirmados((int) confirmados)
                 .totalRechazados((int) rechazados)

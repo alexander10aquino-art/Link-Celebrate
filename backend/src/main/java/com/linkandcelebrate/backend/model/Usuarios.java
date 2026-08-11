@@ -14,18 +14,18 @@ public class Usuarios {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_usuario")
-    private Integer idUsuario;
+    @Column(name = "usuario_id")
+    private Integer usuarioId;
 
-    @Column(name = "nombre_completo", nullable = false, length = 100)
-    private String nombreCompleto;
+    @Column(name = "nombre", nullable = false, length = 100)
+    private String nombre;
 
-    @Column(nullable = false, unique = true, length = 100)
-    private String email;
+    @Column(name = "gmail", nullable = false, unique = true, length = 100)
+    private String gmail;
 
-    @Column(nullable = false, unique = true, length = 50)
-    private String username;
+    @Column(name = "contrasena", nullable = false, length = 100)
+    private String contrasena;
 
-    @Column(nullable = false, length = 255)
-    private String password;
+    @Column(name = "telefono", nullable = false, length = 100)
+    private String telefono;
 }

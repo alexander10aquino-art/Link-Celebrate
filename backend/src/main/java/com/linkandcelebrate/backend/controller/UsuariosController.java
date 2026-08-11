@@ -35,17 +35,16 @@ public class UsuariosController {
     @PostMapping("/crear")
     public String crearUsuario(
             @RequestParam("nombre") String nombre,
-            @RequestParam("email") String email,
-            @RequestParam("username") String username,
-            @RequestParam("password") String password,
+            @RequestParam("gmail") String gmail,
+            @RequestParam("contrasena") String contrasena,
+            @RequestParam(value = "telefono", required = false) String telefono,
             RedirectAttributes redirectAttributes) {
 
-        // Usamos setNombreCompleto para coincidir exactamente con el campo de la Entidad
         Usuarios newUsuario = new Usuarios();
-        newUsuario.setNombreCompleto(nombre);
-        newUsuario.setEmail(email);
-        newUsuario.setUsername(username);
-        newUsuario.setPassword(password);
+        newUsuario.setNombre(nombre);
+        newUsuario.setGmail(gmail);
+        newUsuario.setContrasena(contrasena);
+        newUsuario.setTelefono(telefono != null ? telefono : "+50200000000");
 
         usuariosService.saveUsuario(newUsuario);
         redirectAttributes.addFlashAttribute("exito", "Usuario creado exitosamente.");
@@ -55,17 +54,19 @@ public class UsuariosController {
     // 4. Actualizar usuario existente
     @PostMapping("/actualizar")
     public String actualizarUsuario(
-            @RequestParam("idUsuario") Integer idUsuario,
+            @RequestParam("usuarioId") Integer usuarioId,
             @RequestParam("nombre") String nombre,
-            @RequestParam("email") String email,
-            @RequestParam("username") String username,
+            @RequestParam("gmail") String gmail,
+            @RequestParam(value = "telefono", required = false) String telefono,
             RedirectAttributes redirectAttributes) {
 
-        Usuarios usuarioExistente = usuariosService.getUsuarioById(idUsuario);
+        Usuarios usuarioExistente = usuariosService.getUsuarioById(usuarioId);
         if (usuarioExistente != null) {
-            usuarioExistente.setNombreCompleto(nombre);
-            usuarioExistente.setEmail(email);
-            usuarioExistente.setUsername(username);
+            usuarioExistente.setNombre(nombre);
+            usuarioExistente.setGmail(gmail);
+            if (telefono != null) {
+                usuarioExistente.setTelefono(telefono);
+            }
             usuariosService.updateUsuario(usuarioExistente);
             redirectAttributes.addFlashAttribute("exito", "Usuario actualizado correctamente.");
         }

@@ -4,12 +4,11 @@ import com.linkandcelebrate.backend.model.Usuarios;
 import java.util.List;
 
 public interface UsuariosService {
-    // Registro y Login
-    boolean existeUsername(String username);
+    // Métodos para Registro y Login
     boolean existeEmail(String email);
-    void registrarUsuario(String nombreCompleto, String email, String username, String passwordRaw);
+    void registrarUsuario(String nombreCompleto, String email, String passwordRaw, String telefono);
 
-    // Métodos para UsuariosController
+    // Métodos para el CRUD
     List<Usuarios> getAllUsuarios();
     Usuarios getUsuarioById(Integer id);
     void saveUsuario(Usuarios usuario);
