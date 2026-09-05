@@ -152,3 +152,140 @@ body {
     background-color: var(--secondary-hover) !important;
     color: var(--primary-color) !important;
 }
+
+<style>
+        /* Estilos del botón flotante de WhatsApp */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 40px;
+            right: 40px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 35px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+        .whatsapp-float:hover {
+            color: #FFF;
+            transform: scale(1.1);
+        }
+        .whatsapp-float i {
+            margin-top: 13px;
+        }
+
+        /* Efecto hover suave para las tarjetas */
+        .card-plantilla {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-plantilla:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+        }
+    </style>
+
+    /* Fondo de la página suave */
+    body {
+        background-color: #f8f9fc;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Selector de Planes y Eventos */
+    .plan-selector-bar, .event-filter-bar {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .plan-btn, .btn-event {
+        background: #ffffff;
+        border: 1px solid #e3e6f0;
+        color: #5a5c69;
+        padding: 10px 20px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .plan-btn:hover, .btn-event:hover {
+        background: #f1f3f5;
+        transform: translateY(-2px);
+    }
+
+    .plan-btn.active, .btn-event.active {
+        background: #212529;
+        color: #ffc107;
+        border-color: #212529;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    /* Tarjetas Clean UI (Suaves a la vista) */
+    .card-template {
+        background: #ffffff;
+        border: none;
+        border-radius: 20px; /* Esquinas muy redondeadas */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04); /* Sombra muy suave y difuminada */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+    }
+
+    .card-template:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08); /* Sombra un poco más visible al pasar el mouse */
+    }
+
+    /* Imagen de la tarjeta */
+    .template-img-wrapper {
+        position: relative;
+    }
+
+    .template-img-wrapper img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+    }
+
+    /* Etiqueta flotante en la imagen */
+    .badge-tag {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(255, 255, 255, 0.9);
+        color: #333;
+        padding: 5px 12px;
+        border-radius: 10px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    /* Botón flotante de WhatsApp */
+    .whatsapp-float {
+        position: fixed;
+        width: 60px;
+        height: 60px;
+        bottom: 40px;
+        right: 40px;
+        background-color: #25d366;
+        color: #FFF;
+        border-radius: 50px;
+        text-align: center;
+        font-size: 35px;
+        box-shadow: 2px 4px 15px rgba(37, 211, 102, 0.4);
+        z-index: 1000;
+        transition: transform 0.3s ease;
+    }
+
+    .whatsapp-float:hover {
+        color: #FFF;
+        transform: scale(1.1);
+    }
+
+    .whatsapp-float i {
+        margin-top: 13px;
+    }

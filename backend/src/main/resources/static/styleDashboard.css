@@ -106,3 +106,235 @@ body {
     background-color: var(--primary-hover) !important;
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
 }
+
+:root {
+    --sidebar-bg: #1a1e29;
+    --gold-primary: #facc15;
+    --gold-hover: #eab308;
+    --bg-main: #f4f6f9;
+}
+
+body {
+    background-color: var(--bg-main);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Sidebar mejorada */
+.sidebar {
+    background-color: var(--sidebar-bg);
+    min-height: 100vh;
+    color: white;
+    box-shadow: 4px 0 10px rgba(0,0,0,0.05);
+}
+.sidebar-brand {
+    color: var(--gold-primary);
+    font-weight: 800;
+    font-size: 1.4rem;
+    text-decoration: none;
+    display: block;
+    padding: 1.8rem 1rem;
+    letter-spacing: 0.5px;
+}
+.nav-link {
+    color: #94a3b8;
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+.nav-link:hover, .nav-link.active {
+    background-color: rgba(250, 204, 21, 0.12);
+    color: var(--gold-primary);
+    transform: translateX(4px);
+}
+.nav-link.locked { opacity: 0.4; pointer-events: none; }
+
+.btn-logout {
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    border-radius: 10px;
+    padding: 0.6rem;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    margin-top: 2rem;
+    transition: all 0.2s;
+}
+.btn-logout:hover { background-color: #ef4444; color: white; }
+
+/* Botón dorado profesional */
+.btn-gold {
+    background-color: var(--gold-primary);
+    color: #1a1e29;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    padding: 0.6rem 1.2rem;
+    transition: all 0.2s;
+}
+.btn-gold:hover {
+    background-color: var(--gold-hover);
+    color: #1a1e29;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.3);
+}
+
+/* Tarjetas con profundidad y animación suave */
+.card-custom {
+    border: none;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+.card-custom:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+.card-custom::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--gold-primary);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.card-custom:hover::before { opacity: 1; }
+
+/* Banner de bienvenida superior */
+.welcome-banner {
+    background: linear-gradient(135deg, #1a1e29 0%, #2d3748 100%);
+    border-radius: 16px;
+    color: white;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(26, 30, 41, 0.15);
+}
+.welcome-banner h1 { font-weight: 800; color: #fff; }
+.welcome-banner span { color: var(--gold-primary); }
+
+:root {
+    --bg-primary: #0f172a; /* Fondo oscuro elegante estilo tech */
+    --surface-light: #ffffff;
+    --surface-glass: rgba(255, 255, 255, 0.85);
+    --accent-gold: #f59e0b;
+    --accent-gold-hover: #d97706;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --shadow-subtle: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    --shadow-float: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.08);
+}
+
+body {
+    background-color: #f8fafc;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    color: var(--text-main);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Tarjetas con efecto moderno y profundidad */
+.card-custom {
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    background: var(--surface-light);
+    box-shadow: var(--shadow-subtle);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card-custom:hover {
+    box-shadow: var(--shadow-float);
+    transform: translateY(-2px);
+}
+
+/* Campos de formulario modernos y limpios */
+.form-control, .form-select {
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 0.65rem 1rem;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    background-color: #fdfdfd;
+    transition: all 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--accent-gold);
+    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+    background-color: #fff;
+}
+
+/* Botones con estilo premium */
+.btn-gold {
+    background-color: var(--accent-gold);
+    color: #000;
+    font-weight: 600;
+    border-radius: var(--radius-md);
+    padding: 0.65rem 1.25rem;
+    transition: all 0.2s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2);
+}
+
+.btn-gold:hover {
+    background-color: var(--accent-gold-hover);
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+/* Tablas con diseño flotante */
+.table-custom {
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.table-custom tr {
+    background: white;
+    box-shadow: var(--shadow-subtle);
+    border-radius: var(--radius-md);
+    transition: transform 0.2s ease;
+}
+
+.table-custom tr:hover {
+    transform: scale(1.01);
+}
+
+.table-custom th {
+    background-color: transparent !important;
+    color: var(--text-muted);
+    font-weight: 600;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    padding-bottom: 0.5rem;
+}
+
+.table-custom td {
+    border: none;
+    padding: 1rem;
+}
+
+.table-custom td:first-child {
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+}
+
+.table-custom td:last-child {
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+}
+
+/* Insignias (Badges) modernas y suaves */
+.badge {
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+}

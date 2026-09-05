@@ -2,113 +2,65 @@ package com.linkandcelebrate.backend.controller;
 
 import com.linkandcelebrate.backend.model.Invitaciones;
 import com.linkandcelebrate.backend.service.InvitacionesService;
-import com.linkandcelebrate.backend.validator.InvitacionesValidator;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDateTime; // Importante para la fecha
 import java.util.List;
 
-@Controller
-@RequestMapping("/invitaciones")
+@RestController
+@RequestMapping("/api/invitaciones")
+@CrossOrigin("*") // Permite conexión con el frontend
 public class InvitacionesController {
 
     @Autowired
     private InvitacionesService invitacionesService;
 
-    @Autowired
-    private InvitacionesValidator invitacionesValidator;
-
-    // 1. Cargar la vista principal con todas las invitaciones
-    @GetMapping
-    public String cargarInvitaciones(Model model) {
-        if (!model.containsAttribute("invitaciones")) {
-            model.addAttribute("invitaciones", invitacionesService.getAllInvitaciones());
+    @PostMapping
+    public ResponseEntity<Invitaciones> guardar(@RequestBody Invitaciones invitacion) {
+        // Validación corregida usando getTituloEvento()
+        if (invitacion.getTituloEvento() == null || invitacion.getTituloEvento().trim().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return "Invitaciones"; // Plantilla HTML
+        Invitaciones nueva = invitacionesService.saveInvitacion(invitacion);
+        return new ResponseEntity<>(nueva, HttpStatus.CREATED);
     }
 
-    // 2. Listar / refrescar la tabla
-    @GetMapping("/listar")
-    public String listarInvitaciones(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("invitaciones", invitacionesService.getAllInvitaciones());
-        redirectAttributes.addFlashAttribute("success", "¡Se actualizó la tabla correctamente!");
-        return "redirect:/invitaciones";
+    @PutMapping("/{id}")
+    public ResponseEntity<Invitaciones> actualizar(@PathVariable Integer id, @RequestBody Invitaciones invitacion) {
+        // Validación corregida usando getTituloEvento()
+        if (invitacion.getTituloEvento() == null || invitacion.getTituloEvento().trim().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        Invitaciones actualizada = invitacionesService.updateInvitacion(id, invitacion);
+        if (actualizada != null) {
+            return new ResponseEntity<>(actualizada, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // 3. Buscar invitación por ID
-    @GetMapping("/buscar")
-    public String buscarInvitacion(RedirectAttributes redirectAttributes, @RequestParam Integer idInvitacion) {
-        Invitaciones invitacion = invitacionesService.getInvitacionById(idInvitacion);
-        redirectAttributes.addFlashAttribute("invitaciones", List.of(invitacion));
-        redirectAttributes.addFlashAttribute("success", "¡Se encontró el registro!");
-        return "redirect:/invitaciones";
+    @GetMapping("/{id}")
+    public ResponseEntity<Invitaciones> obtenerPorId(@PathVariable Integer id) {
+        Invitaciones invitacion = invitacionesService.getInvitacionById(id);
+        if (invitacion != null) {
+            return new ResponseEntity<>(invitacion, HttpStatus.OK);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // 4. Crear una nueva invitación
-    @PostMapping("/crear")
-    public String crearInvitacion(RedirectAttributes redirectAttributes,
-                                  @Valid @RequestParam String titulo,
-                                  // Parámetro 'descripcion' eliminado
-                                  @Valid @RequestParam String fechaEvento,
-                                  @Valid @RequestParam String planTipo, // BASIC, PREMIUM, VIP
-                                  @Valid @RequestParam Integer fkIdUsuario,
-                                  @Valid @RequestParam Integer fkIdPlantilla) {
-
-        Invitaciones newInvitacion = new Invitaciones();
-        newInvitacion.setTitulo(titulo);
-
-        // Convertimos el texto que viene del HTML a una Fecha Real de Java
-        newInvitacion.setFechaEvento(LocalDateTime.parse(fechaEvento));
-
-        newInvitacion.setPlanTipo(planTipo);
-        newInvitacion.setFkIdUsuario(fkIdUsuario);
-        newInvitacion.setFkIdPlantilla(fkIdPlantilla);
-
-        invitacionesValidator.validar(newInvitacion);
-        invitacionesService.saveInvitacion(newInvitacion);
-
-        redirectAttributes.addFlashAttribute("success", "¡Se creó la invitación correctamente!");
-        return "redirect:/invitaciones";
+    // Por si necesitas los otros métodos (listar y eliminar)
+    /*
+    @GetMapping
+    public ResponseEntity<List<Invitaciones>> listarTodas() {
+        return new ResponseEntity<>(invitacionesService.listarInvitaciones(), HttpStatus.OK);
     }
 
-    // 5. Editar una invitación existente
-    @PostMapping("/editar")
-    public String editarInvitacion(RedirectAttributes redirectAttributes,
-                                   @Valid @RequestParam Integer idInvitacion,
-                                   @Valid @RequestParam String titulo,
-                                   // Parámetro 'descripcion' eliminado
-                                   @Valid @RequestParam String fechaEvento,
-                                   @Valid @RequestParam String planTipo,
-                                   @Valid @RequestParam Integer fkIdUsuario,
-                                   @Valid @RequestParam Integer fkIdPlantilla) {
-
-        Invitaciones newInvitacion = new Invitaciones();
-        newInvitacion.setTitulo(titulo);
-
-        // CORRECCIÓN: Parseamos la fecha y eliminamos setDescripcion()
-        newInvitacion.setFechaEvento(LocalDateTime.parse(fechaEvento));
-
-        newInvitacion.setPlanTipo(planTipo);
-        newInvitacion.setFkIdUsuario(fkIdUsuario);
-        newInvitacion.setFkIdPlantilla(fkIdPlantilla);
-
-        invitacionesValidator.validar(newInvitacion);
-        invitacionesService.updateInvitacion(idInvitacion, newInvitacion);
-
-        redirectAttributes.addFlashAttribute("success", "¡Se editó la invitación No: " + idInvitacion + "!");
-        return "redirect:/invitaciones";
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> eliminar(@PathVariable Integer id) {
+        invitacionesService.eliminarInvitacion(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-    // 6. Eliminar invitación
-    @GetMapping("/eliminar/{id}")
-    public String eliminarInvitacion(RedirectAttributes redirectAttributes, @PathVariable Integer id) {
-        invitacionesService.deleteInvitacion(id);
-        redirectAttributes.addFlashAttribute("success", "¡Se eliminó la invitación correctamente!");
-        return "redirect:/invitaciones";
-    }
+    */
 }

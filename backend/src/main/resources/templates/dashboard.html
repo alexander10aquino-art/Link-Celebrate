@@ -3,205 +3,268 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Panel | Link & Celebrate</title>
+    <title>Mi Dashboard | Link & Celebrate</title>
 
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- FontAwesome Iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Asegúrate de tener tu CSS personalizado en static -->
-    <link rel="stylesheet" th:href="@{/styleDashboard.css}">
-
     <style>
-        /* Estilos base en caso de que no cargue tu CSS (puedes pasarlos a styleDashboard.css) */
-        body { background-color: #f8f9fa; }
-        .sidebar { background-color: #1a1e29; min-height: 100vh; color: white; }
-        .sidebar-brand { color: #facc15; font-weight: bold; font-size: 1.5rem; text-decoration: none; display: block; padding: 1.5rem 1rem;}
-        .nav-link { color: #a1a1aa; padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 0.5rem; transition: 0.3s; }
-        .nav-link:hover, .nav-link.active { background-color: rgba(250, 204, 21, 0.1); color: #facc15; border: 1px solid rgba(250, 204, 21, 0.5); }
-        .nav-link.locked { opacity: 0.5; pointer-events: none; }
-        .btn-logout { border: 1px solid #ef4444; color: #ef4444; border-radius: 8px; padding: 0.5rem; text-align: center; text-decoration: none; display: block; margin-top: 2rem;}
-        .btn-logout:hover { background-color: #ef4444; color: white; }
-        .btn-gold { background-color: #facc15; color: #1a1e29; font-weight: bold; border: none; }
-        .btn-gold:hover { background-color: #eab308; color: #1a1e29; }
-        .card { border: none; border-radius: 12px; }
+        :root {
+            --bg-body: #f8fafc;
+            --primary-dark: #0f172a;
+            --accent-gold: #d4af37;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --card-radius: 24px;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* HERO HEADER DASHBOARD */
+        .dashboard-hero {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #1e293b 100%);
+            padding: 4rem 0 5rem 0;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: -3rem;
+        }
+
+        .dashboard-hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(212, 175, 55, 0.15) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 1;
+        }
+
+        .dashboard-hero .container {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* TARJETAS PERSONALIZADAS */
+        .card-custom {
+            background: #ffffff;
+            border: 1px solid #f1f5f9;
+            border-radius: var(--card-radius);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.06);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.1);
+            border-color: #e2e8f0;
+        }
+
+        /* BOTONES DE ACCIÓN */
+        .btn-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+        }
+
+        .btn-gold:hover {
+            background: #d97706;
+            color: #000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
+        }
+
+        .btn-dark-custom {
+            background: var(--primary-dark);
+            color: #ffffff;
+            font-weight: 600;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-dark-custom:hover {
+            background: var(--accent-gold);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body>
 
-<div class="container-fluid">
-    <div class="row">
+<!-- NAVBAR PRINCIPAL -->
+<div th:replace="~{navbar :: menu_superior}"></div>
 
-        <!-- ========================================== -->
-        <!-- MENÚ LATERAL (SIDEBAR)                     -->
-        <!-- ========================================== -->
-        <nav class="col-md-2 d-none d-md-block sidebar px-3">
-            <a href="/dashboard" class="sidebar-brand text-center">
-                <i class="fa-solid fa-champagne-glasses me-2"></i>Link &<br>Celebrate
-            </a>
-
-            <ul class="nav flex-column mt-4">
-                <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/dashboard}">
-                        <i class="fa-solid fa-house me-2"></i> Inicio / Resumen
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <!-- Si NO hay invitación, desactivamos "Mi Invitación" -->
-                    <a class="nav-link" th:classappend="${invitacion == null} ? 'locked' : ''" th:href="@{/mi-invitacion}">
-                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Mi Invitación
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <!-- Lógica de Rol/Plan: Bloqueamos invitados si es Básico o no hay evento -->
-                    <a class="nav-link"
-                       th:classappend="${invitacion == null or invitacion.tipoPaquete == 'basico'} ? 'locked' : ''"
-                       th:href="@{/invitados}">
-                        <i class="fa-solid fa-users me-2"></i> Lista de Invitados
-                        <i th:if="${invitacion != null and invitacion.tipoPaquete == 'basico'}" class="fa-solid fa-lock ms-2 small"></i>
-                    </a>
-                </li>
-            </ul>
-
-            <!-- Botón Cerrar Sesión (Conectado a Spring Security) -->
-            <form th:action="@{/logout}" method="post" class="mt-auto pb-4">
-                <button type="submit" class="btn-logout w-100 bg-transparent">
-                    <i class="fa-solid fa-arrow-right-from-bracket me-2"></i> Cerrar Sesión
-                </button>
-            </form>
-        </nav>
-
-        <!-- ========================================== -->
-        <!-- CONTENIDO PRINCIPAL                        -->
-        <!-- ========================================== -->
-        <main class="col-md-10 ms-sm-auto px-md-5 py-4">
-
-            <!-- ESTADO 1: PANEL VACÍO (Usuario Nuevo) -->
-            <div th:if="${invitacion == null}" class="d-flex flex-column align-items-center justify-content-center mt-5" style="min-height: 60vh;">
-                <div class="mb-4 text-muted">
-                    <i class="fa-regular fa-folder-open fa-5x"></i>
-                </div>
-                <h2 class="fw-bold text-dark">¡Bienvenido a tu panel, <span th:text="${usuario.nombre}">Jeremy</span>!</h2>
-                <p class="text-secondary text-center mb-4" style="max-width: 500px;">
-                    Tu lienzo está en blanco. Aún no tienes ningún evento activo. Empieza a diseñar tu primera invitación eligiendo una de nuestras plantillas.
+<!-- HERO HEADER DASHBOARD -->
+<section class="dashboard-hero">
+    <div class="container">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+            <div>
+                <span class="text-uppercase text-warning fw-bold small tracking-widest" style="letter-spacing: 2px;">Panel de Control</span>
+                <h2 class="fw-bold text-white m-0 display-6">¡Hola, <span th:text="${usuario.nombre}">Usuario</span>! 👋</h2>
+                <p class="text-light opacity-75 small m-0 mt-2">
+                    Evento actual:
+                    <span class="badge bg-warning text-dark px-3 py-1 fw-bold fs-6 ms-1"
+                          th:text="${invitacion != null ? invitacion.tituloEvento : 'Sin evento activo'}">Nombre del Evento</span>
                 </p>
-                <a th:href="@{/plantillas-catalogo}" class="btn btn-gold btn-lg px-4 shadow-sm">
-                    <i class="fa-solid fa-plus me-2"></i> Crear Nuevo Evento
+            </div>
+            <div>
+                <a th:href="@{/invitados}" class="btn btn-gold px-4 py-2 rounded-pill shadow-sm">
+                    <i class="fa-solid fa-users me-1"></i> Gestionar Invitados
                 </a>
             </div>
-
-            <!-- ESTADO 2: PANEL ACTIVO (Usuario con Evento) -->
-            <div th:if="${invitacion != null}">
-
-                <!-- Encabezado -->
-                <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-                    <h2 class="fw-bold m-0 text-dark">Panel de Control</h2>
-                    <a th:href="@{/plantillas-catalogo}" class="btn btn-gold shadow-sm">
-                        <i class="fa-solid fa-plus me-1"></i> Crear Nuevo Evento
-                    </a>
-                </div>
-
-                <!-- Tarjetas de Información -->
-                <div class="row g-4 mb-5">
-
-                    <!-- Tarjeta 1: Evento Activo -->
-                    <div class="col-md-4">
-                        <div class="card p-4 shadow-sm h-100">
-                            <p class="text-muted small mb-2 fw-bold letter-spacing-1">EVENTO ACTIVO</p>
-                            <h4 class="fw-bold text-dark mb-3" th:text="${invitacion.tituloEvento}">Boda Marfil Clásico</h4>
-                            <div>
-                                <!-- Insignias dinámicas según el paquete -->
-                                <span th:if="${invitacion.tipoPaquete == 'basico'}" class="badge bg-secondary p-2">Plan Básico</span>
-                                <span th:if="${invitacion.tipoPaquete == 'premium'}" class="badge bg-success p-2">Plan Premium</span>
-                                <span th:if="${invitacion.tipoPaquete == 'vip'}" class="badge bg-dark p-2 text-warning">Plan VIP <i class="fa-solid fa-crown ms-1"></i></span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta 2: Invitados Confirmados -->
-                    <div class="col-md-4">
-                        <div class="card p-4 shadow-sm h-100">
-                            <p class="text-muted small mb-2 fw-bold letter-spacing-1">INVITADOS CONFIRMADOS</p>
-
-                            <!-- Visible para Premium y VIP -->
-                            <div th:if="${invitacion.tipoPaquete == 'premium' or invitacion.tipoPaquete == 'vip'}">
-                                <h3 class="fw-bold text-dark m-0">42 / 100</h3>
-                                <small class="text-success fw-bold mt-2 d-inline-block">
-                                    <i class="fa-solid fa-arrow-up"></i> 8 confirmaciones hoy
-                                </small>
-                            </div>
-
-                            <!-- Visible para Básico (Bloqueado) -->
-                            <div th:if="${invitacion.tipoPaquete == 'basico'}" class="text-center mt-2">
-                                <i class="fa-solid fa-lock text-muted mb-2 fa-2x"></i>
-                                <p class="text-muted small mb-1">Control de invitados no incluido</p>
-                                <a href="/mejorar-plan" class="text-warning small text-decoration-none fw-bold">Mejorar al Plan Premium</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tarjeta 3: Enlace Público -->
-                    <div class="col-md-4">
-                        <div class="card p-4 shadow-sm h-100">
-                            <p class="text-muted small mb-2 fw-bold letter-spacing-1">ENLACE PÚBLICO</p>
-                            <div class="input-group mt-2">
-                                <!-- Se asume que el objeto invitacion tiene un campo urlPersonalizada o similar, ajusta el th:value según tu modelo -->
-                                <input type="text" class="form-control bg-light" readonly
-                                       th:value="'linkandcelebrate.com/e/' + ${invitacion.idInvitacion}">
-                                <button class="btn btn-outline-secondary" type="button" title="Copiar enlace">
-                                    <i class="fa-regular fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tabla de Confirmaciones (Solo visible para planes superiores) -->
-                <div class="card p-4 shadow-sm" th:if="${invitacion.tipoPaquete == 'premium' or invitacion.tipoPaquete == 'vip'}">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold m-0">Últimas Confirmaciones (RSVP)</h5>
-                        <a th:href="@{/invitados}" class="btn btn-outline-secondary btn-sm">Ver Todos</a>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table align-middle">
-                            <thead class="text-muted small letter-spacing-1">
-                            <tr>
-                                <th>NOMBRE</th>
-                                <th>PASES</th>
-                                <th>ESTADO</th>
-                                <th>MENSAJE</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <!-- Aquí podrías iterar con th:each="invitado : ${listaInvitados}" -->
-                            <tr>
-                                <td class="fw-bold">Carlos Mendoza</td>
-                                <td>2 pases</td>
-                                <td><span class="badge bg-success">Confirmado</span></td>
-                                <td class="text-muted">¡Muchas felicidades, ahí estaremos!</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Ana Lucía Gómez</td>
-                                <td>1 pase</td>
-                                <td><span class="badge bg-danger">No asistirá</span></td>
-                                <td class="text-muted">Un abrazo a la distancia.</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Rodrigo Morales</td>
-                                <td>4 pases</td>
-                                <td><span class="badge bg-warning text-dark">Pendiente</span></td>
-                                <td class="text-muted">Por confirmar transporte.</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-            </div>
-        </main>
+        </div>
     </div>
+</section>
+
+<div class="container py-5 px-3 position-relative z-3" style="margin-top: 1rem;">
+
+    <!-- SI NO TIENE INVITACIÓN -->
+    <div th:if="${invitacion == null}" class="card card-custom p-5 text-center">
+        <div class="text-warning mb-3 fs-1"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <h3 class="fw-bold text-dark mb-3">Aún no tienes un evento activo</h3>
+        <p class="text-muted mb-4">Elige una plantilla en nuestro catálogo para comenzar a armar tu invitación y pases digitales.</p>
+        <div>
+            <a th:href="@{/plantillas-catalogo}" class="btn btn-gold px-4 py-2 rounded-pill shadow-sm">
+                Ver Catálogo de Plantillas
+            </a>
+        </div>
+    </div>
+
+    <!-- SI SÍ TIENE INVITACIÓN -->
+    <div th:if="${invitacion != null}">
+
+        <!-- SECCIÓN DE ESTADO DE PAGO Y VISTA DE INVITACIÓN -->
+        <div class="card card-custom p-4 mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <h4 class="fw-bold text-dark mb-1" th:text="${invitacion.tituloEvento}">Mi Evento</h4>
+                    <p class="text-muted small mb-2">Paquete contratado: <span class="text-uppercase fw-semibold text-warning" th:text="${invitacion.tipoPaquete}">Básico</span></p>
+
+                    <!-- Estado de Pago -->
+                    <span th:if="${invitacion.estadoPago == 'Pagado'}" class="badge bg-success bg-opacity-10 text-success border border-success px-3 py-1 rounded-pill">
+                        <i class="fa-solid fa-check-circle me-1"></i> Pagado y Activo
+                    </span>
+                    <span th:if="${invitacion.estadoPago != 'Pagado'}" class="badge bg-danger bg-opacity-10 text-danger border border-danger px-3 py-1 rounded-pill">
+                        <i class="fa-solid fa-lock me-1"></i> Pago Pendiente / Suspendido
+                    </span>
+                </div>
+
+                <div class="col-md-4 text-md-end">
+                    <!-- Alerta roja si no ha pagado -->
+                    <div th:if="${invitacion.estadoPago != 'Pagado'}" class="text-danger small mb-2 fw-semibold">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Servicio en pausa por pago pendiente.
+                    </div>
+
+                    <!-- Botón activo (Si pagó y ya subiste el link) -->
+                    <a th:if="${invitacion.estadoPago == 'Pagado' and invitacion.slugUrl != null and invitacion.slugUrl != ''}"
+                       th:href="${invitacion.slugUrl}"
+                       target="_blank" class="btn btn-gold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="fa-solid fa-eye me-1"></i> Ver mi Invitación
+                    </a>
+
+                    <!-- Botón deshabilitado (Si falta pago o tú aún estás diseñando la página) -->
+                    <button th:if="${invitacion.estadoPago != 'Pagado' or invitacion.slugUrl == null or invitacion.slugUrl == ''}"
+                            disabled class="btn btn-secondary fw-bold px-4 py-2 rounded-pill shadow-sm">
+                        <i class="fa-solid fa-eye-slash me-1"></i> Invitación en Proceso
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================================================= -->
+        <!-- MÓDULO EXCLUSIVO PLAN VIP (CONTROL DE ACCESO / ESCÁNER) - BLINDADO -->
+        <!-- ================================================================= -->
+        <div th:if="${invitacion.tipoPaquete != null and invitacion.tipoPaquete.toUpperCase() == 'VIP'}" class="card card-custom p-4 mb-4 text-white" style="background: linear-gradient(135deg, #0f172a 100%, #1e293b 0%); border: 1px solid rgba(212, 175, 55, 0.4);">
+            <div class="row align-items-center">
+                <div class="col-md-8 mb-3 mb-md-0">
+                    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold mb-2 text-uppercase" style="font-size: 0.7rem;">Beneficio Plan VIP</span>
+                    <h4 class="fw-bold mb-1 text-warning">🛡️ Sistema de Control de Acceso (Puerta)</h4>
+                    <p class="small text-white-50 m-0">
+                        Comparte este enlace con el personal de recepción o seguridad. Podrán escanear los códigos QR de los invitados desde su celular sin necesidad de iniciar sesión.
+                    </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <!-- Abrir Escáner -->
+                        <a href="/escaner" target="_blank" class="btn btn-success fw-bold px-3 py-2 rounded-pill shadow-sm text-nowrap">
+                            <i class="fa-solid fa-camera me-1"></i> Abrir Escáner
+                        </a>
+                        <!-- Copiar Link sin Alertas Feas -->
+                        <button id="btnCopiar" onclick="copiarEnlaceEscaner()" class="btn btn-light text-success fw-bold px-3 py-2 rounded-pill shadow-sm text-nowrap">
+                            <i class="fa-brands fa-whatsapp me-1"></i> Copiar Link
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TARJETAS DE ESTADÍSTICAS -->
+        <div class="row g-4">
+            <div class="col-12 col-md-4">
+                <div class="card card-custom p-4 text-center">
+                    <div class="text-primary mb-2 fs-3"><i class="fa-solid fa-users"></i></div>
+                    <h6 class="text-muted small fw-semibold text-uppercase" style="letter-spacing: 1px;">Total Invitados</h6>
+                    <h2 class="fw-bold text-dark m-0 mt-1" th:text="${totalInvitados}">0</h2>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card card-custom p-4 text-center">
+                    <div class="text-success mb-2 fs-3"><i class="fa-solid fa-circle-check"></i></div>
+                    <h6 class="text-muted small fw-semibold text-uppercase" style="letter-spacing: 1px;">Confirmados</h6>
+                    <h2 class="fw-bold text-dark m-0 mt-1" th:text="${confirmados}">0</h2>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card card-custom p-4 text-center">
+                    <div class="text-warning mb-2 fs-3"><i class="fa-solid fa-user-plus"></i></div>
+                    <h6 class="text-muted small fw-semibold text-uppercase" style="letter-spacing: 1px;">Acompañantes Estimados</h6>
+                    <h2 class="fw-bold text-dark m-0 mt-1" th:text="${totalAcompanantes}">0</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
 </div>
+
+<!-- SCRIPT MODERNO SIN ALERTAS -->
+<script>
+    function copiarEnlaceEscaner() {
+        const urlEscaner = window.location.origin + "/escaner";
+        const btn = document.getElementById('btnCopiar');
+
+        navigator.clipboard.writeText(urlEscaner).then(() => {
+            const originalHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check me-1"></i> ¡Copiado!';
+            btn.classList.remove('btn-light', 'text-success');
+            btn.classList.add('btn-success');
+
+            setTimeout(() => {
+                btn.innerHTML = originalHTML;
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-light', 'text-success');
+            }, 2500);
+        }).catch(err => {
+            console.error("Error al copiar: ", err);
+        });
+    }
+</script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

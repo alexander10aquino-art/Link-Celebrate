@@ -1,16 +1,12 @@
-package com.linkandcelebrate.backend.mapper;
+package com.linkandcelebrate.backend.mapper; // Verifica que tu paquete sea este
 
 import com.linkandcelebrate.backend.dto.RsvpResponseDTO;
 import com.linkandcelebrate.backend.model.Invitados;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Component
 public class InvitadosMapper {
 
-    // Convierte una entidad Invitados a RsvpResponseDTO
     public RsvpResponseDTO toDto(Invitados invitado) {
         if (invitado == null) {
             return null;
@@ -18,23 +14,27 @@ public class InvitadosMapper {
 
         return RsvpResponseDTO.builder()
                 .idInvitado(invitado.getIdInvitado())
-                .nombre(invitado.getNombre())
-                .email(invitado.getEmail())
-                .telefono(invitado.getTelefono())
-                .estado(invitado.getEstado())
-                .acompanantes(invitado.getAcompanantes())
-                .restriccionesAlimentarias(invitado.getRestriccionesAlimentarias())
+                // Conectamos los campos del DTO con los nombres correctos de tu BD
+                .nombre(invitado.getNombreInvitado())
+                .estado(invitado.getAsistencia())
+                // Estos 3 ya no existen en tu BD, les pasamos null o 0
+                .email(null)
+                .acompanantes(0)
+                .restriccionesAlimentarias(null)
                 .build();
     }
 
-    // Convierte una lista de entidades Invitados a una lista de DTOs
-    public List<RsvpResponseDTO> toDtoList(List<Invitados> invitadosList) {
-        if (invitadosList == null) {
-            return List.of();
+    // Por si tienes el método inverso (de DTO a Entidad)
+    public Invitados toEntity(RsvpResponseDTO dto) {
+        if (dto == null) {
+            return null;
         }
 
-        return invitadosList.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+        return Invitados.builder()
+                .idInvitado(dto.getIdInvitado())
+                .nombreInvitado(dto.getNombre())
+                .asistencia(dto.getEstado())
+                // No mapeamos el resto porque ya no existen en tu tabla
+                .build();
     }
 }

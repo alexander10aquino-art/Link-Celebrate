@@ -1,113 +1,134 @@
 package com.linkandcelebrate.backend.controller;
 
+import com.linkandcelebrate.backend.model.Invitaciones;
 import com.linkandcelebrate.backend.model.Invitados;
-import com.linkandcelebrate.backend.service.InvitadosService;
-import com.linkandcelebrate.backend.validator.InvitadosValidator;
-import jakarta.validation.Valid;
+import com.linkandcelebrate.backend.model.Usuarios;
+import com.linkandcelebrate.backend.repository.InvitacionesRepository;
+import com.linkandcelebrate.backend.repository.InvitadosRepository;
+import com.linkandcelebrate.backend.repository.UsuariosRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
-@RequestMapping("/invitados")
 public class InvitadosController {
 
     @Autowired
-    private InvitadosService invitadosService;
+    private InvitadosRepository invitadosRepository;
 
     @Autowired
-    private InvitadosValidator invitadosValidator;
+    private InvitacionesRepository invitacionesRepository;
 
-    // 1. Cargar la vista principal con todos los invitados
-    @GetMapping
-    public String cargarInvitados(Model model) {
-        if (!model.containsAttribute("invitados")) {
-            model.addAttribute("invitados", invitadosService.getAllInvitados());
+    @Autowired
+    private UsuariosRepository usuariosRepository;
+
+    @GetMapping("/invitados")
+    public String mostrarListaInvitados(Model model, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            Usuarios usuario = usuariosRepository.findByGmail(email).orElse(null);
+
+            if (usuario != null) {
+                List<Invitaciones> misEventos = invitacionesRepository.findByFkIdUsuario(usuario.getUsuarioId());
+
+                if (misEventos != null && !misEventos.isEmpty()) {
+                    Invitaciones eventoActual = misEventos.get(0);
+                    model.addAttribute("invitacion", eventoActual);
+
+                    List<Invitados> lista = invitadosRepository.findByFkIdInvitacion(eventoActual.getIdInvitacion());
+                    model.addAttribute("invitados", lista);
+                } else {
+                    model.addAttribute("invitados", Collections.emptyList());
+                }
+            }
         }
-        return "Invitados"; // Plantilla HTML
+
+        model.addAttribute("nuevoInvitado", new Invitados());
+        return "invitados";
     }
 
-    // 2. Listar / refrescar la tabla de invitados
-    @GetMapping("/listar")
-    public String listarInvitados(RedirectAttributes redirectAttributes) {
-        redirectAttributes.addFlashAttribute("invitados", invitadosService.getAllInvitados());
-        redirectAttributes.addFlashAttribute("success", "¡Se actualizó la lista de invitados correctamente!");
+    @PostMapping("/invitados/guardar")
+    public String guardarInvitado(@ModelAttribute("nuevoInvitado") Invitados nuevoInvitado, Principal principal) {
+        if (principal != null) {
+            String email = principal.getName();
+            Usuarios usuario = usuariosRepository.findByGmail(email).orElse(null);
+
+            if (usuario != null) {
+                List<Invitaciones> misEventos = invitacionesRepository.findByFkIdUsuario(usuario.getUsuarioId());
+
+                if (misEventos != null && !misEventos.isEmpty()) {
+                    Invitaciones eventoActual = misEventos.get(0);
+                    nuevoInvitado.setFkIdInvitacion(eventoActual.getIdInvitacion());
+                    nuevoInvitado.setAsistencia("Pendiente");
+
+                    // El tokenQr se genera automáticamente gracias al @PrePersist en el modelo.
+                    invitadosRepository.save(nuevoInvitado);
+                }
+            }
+        }
         return "redirect:/invitados";
     }
 
-    // 3. Buscar invitado por ID
-    @GetMapping("/buscar")
-    public String buscarInvitado(RedirectAttributes redirectAttributes, @RequestParam Integer idInvitado) {
-        Invitados invitado = invitadosService.getInvitadoById(idInvitado);
-        redirectAttributes.addFlashAttribute("invitados", List.of(invitado));
-        redirectAttributes.addFlashAttribute("success", "¡Se encontró el registro del invitado!");
+    @GetMapping("/invitados/eliminar/{id}")
+    public String eliminarInvitado(@PathVariable Integer id) {
+        invitadosRepository.deleteById(id);
         return "redirect:/invitados";
     }
 
-    // 4. Crear / confirmar un nuevo invitado
-    @PostMapping("/crear")
-    public String crearInvitado(RedirectAttributes redirectAttributes,
-                                @Valid @RequestParam String nombre,
-                                @Valid @RequestParam String email,
-                                @Valid @RequestParam String telefono,
-                                @Valid @RequestParam String estado, // CONFIRMADO, PENDIENTE, RECHAZADO
-                                @Valid @RequestParam Integer acompanantes,
-                                @Valid @RequestParam String restriccionesAlimentarias,
-                                @Valid @RequestParam Integer fkIdInvitacion) {
-
-        Invitados newInvitado = new Invitados();
-        newInvitado.setNombre(nombre);
-        newInvitado.setEmail(email);
-        newInvitado.setTelefono(telefono);
-        newInvitado.setEstado(estado);
-        newInvitado.setAcompanantes(acompanantes);
-        newInvitado.setRestriccionesAlimentarias(restriccionesAlimentarias);
-        newInvitado.setFkIdInvitacion(fkIdInvitacion);
-
-        invitadosValidator.validar(newInvitado);
-        invitadosService.saveInvitado(newInvitado);
-
-        redirectAttributes.addFlashAttribute("success", "¡Se registró el invitado correctamente!");
-        return "redirect:/invitados";
+    // =========================================================================
+    // VISTA WEB DEL ESCÁNER PARA LA PUERTA
+    // =========================================================================
+    @GetMapping("/escaner")
+    public String mostrarVistaEscaner() {
+        return "escaner"; // Abre el archivo escaner.html que creamos
     }
 
-    // 5. Editar información de un invitado
-    @PostMapping("/editar")
-    public String editarInvitado(RedirectAttributes redirectAttributes,
-                                 @Valid @RequestParam Integer idInvitado,
-                                 @Valid @RequestParam String nombre,
-                                 @Valid @RequestParam String email,
-                                 @Valid @RequestParam String telefono,
-                                 @Valid @RequestParam String estado,
-                                 @Valid @RequestParam Integer acompanantes,
-                                 @Valid @RequestParam String restriccionesAlimentarias,
-                                 @Valid @RequestParam Integer fkIdInvitacion) {
+    // =========================================================================
+    // ENDPOINT VIP: VALIDAR ACCESO CON QR EN LA PUERTA (CONSUMIDO POR EL ESCÁNER)
+    // =========================================================================
+    @GetMapping("/api/vip/validar/{token}")
+    @ResponseBody
+    public ResponseEntity<?> validarPaseQr(@PathVariable String token) {
+        // 1. Buscar al invitado mediante el token único
+        Invitados invitado = invitadosRepository.findByTokenQr(token).orElse(null);
 
-        Invitados newInvitado = new Invitados();
-        newInvitado.setNombre(nombre);
-        newInvitado.setEmail(email);
-        newInvitado.setTelefono(telefono);
-        newInvitado.setEstado(estado);
-        newInvitado.setAcompanantes(acompanantes);
-        newInvitado.setRestriccionesAlimentarias(restriccionesAlimentarias);
-        newInvitado.setFkIdInvitacion(fkIdInvitacion);
+        if (invitado == null) {
+            return ResponseEntity.status(404).body(Map.of(
+                    "exito", false,
+                    "mensaje", "❌ Pase inválido o no encontrado"
+            ));
+        }
 
-        invitadosValidator.validar(newInvitado);
-        invitadosService.updateInvitado(idInvitado, newInvitado);
+        // 2. Verificar si ya usó su pase previamente (Control anti-fraude)
+        if ("Ingresó".equals(invitado.getAsistencia())) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "exito", false,
+                    "nombre", invitado.getNombreInvitado(),
+                    "mensaje", "⚠️ ATENCIÓN: Este pase ya fue utilizado"
+            ));
+        }
 
-        redirectAttributes.addFlashAttribute("success", "¡Se editó la información del invitado No: " + idInvitado + "!");
-        return "redirect:/invitados";
-    }
+        // 3. Marcar como ingresado en la base de datos
+        invitado.setAsistencia("Ingresó");
+        invitadosRepository.save(invitado);
 
-    // 6. Eliminar invitado
-    @GetMapping("/eliminar/{id}")
-    public String eliminarInvitado(RedirectAttributes redirectAttributes, @PathVariable Integer id) {
-        invitadosService.deleteInvitado(id);
-        redirectAttributes.addFlashAttribute("success", "¡Se eliminó el invitado correctamente!");
-        return "redirect:/invitados";
+        // 4. Devolver respuesta de éxito para poner la pantalla verde
+        return ResponseEntity.ok(Map.of(
+                "exito", true,
+                "nombre", invitado.getNombreInvitado(),
+                "pases", 1 + (invitado.getAcompanantes() != null ? invitado.getAcompanantes() : 0),
+                "mensaje", "✅ ¡Acceso Autorizado!"
+        ));
     }
 }

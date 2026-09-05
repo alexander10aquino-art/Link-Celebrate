@@ -42,29 +42,38 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authenticationProvider(authenticationProvider())
+                // HABILITA CORS PARA QUE NETLIFY PUEDA LEER LA API
+                .cors(org.springframework.security.config.Customizer.withDefaults())
+
+                // EXCEPCIÓN DE SEGURIDAD CSRF PARA LA API (Permite el POST de confirmación desde Netlify)
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/invitados/**"))
+
                 .authorizeHttpRequests(auth -> auth
+                        // 1. RUTAS PÚBLICAS
                         .requestMatchers(
                                 "/",
-                                "/login",
-                                "/registro",
+                                "/catalogo",
+                                "/plantillas",
                                 "/plantillas-catalogo",
-                                "/invitacion/**",
+                                "/ver-catalogo",
+                                "/registro",
+                                "/invitacion/demo/**",
+                                "/error",
                                 "/*.css",
+                                "/*.js",
                                 "/css/**",
                                 "/js/**",
-                                "/images/**"
+                                "/img/**",
+                                "/api/invitados/**" // <-- API LIBERADA PARA LOS INVITADOS Y PLANTILLAS
                         ).permitAll()
+                        // 2. RUTAS PROTEGIDAS (Botón "Elegir", "Dashboard", etc.)
                         .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
+                .formLogin(login -> login
                         .loginPage("/login")
-                        .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
 

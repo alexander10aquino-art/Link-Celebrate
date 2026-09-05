@@ -3,70 +3,263 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro | Link & Celebrate</title>
+    <title>Crear Cuenta | Link & Celebrate</title>
 
-    <!-- Bootstrap 5 CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Estilos personalizados -->
-    <link rel="stylesheet" th:href="@{/styleLogin.css}">
+    <style>
+        :root {
+            --accent-gold: #d4af37;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #05080f;
+            overflow-x: hidden;
+            position: relative;
+            padding: 2rem 0; /* Espacio para hacer scroll en móvil */
+        }
+
+        /* CAPAS DE PROFUNDIDAD */
+        .bg-image {
+            position: fixed; /* Fixed para que el fondo no se mueva al hacer scroll */
+            top: -10%; left: -10%;
+            width: 120%; height: 120%;
+            background-image: url('https://images.unsplash.com/photo-1520854221256-17451cc331bf?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            animation: kenBurns 25s infinite alternate ease-in-out;
+            z-index: 0;
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15) rotate(1deg); }
+        }
+
+        .bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(5, 8, 15, 0.9) 0%, rgba(15, 23, 42, 0.7) 100%);
+            z-index: 1;
+        }
+
+        .light-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(60px);
+            z-index: 2;
+            animation: floatOrb 15s infinite ease-in-out alternate;
+        }
+        .orb-gold { width: 350px; height: 350px; background: rgba(212, 175, 55, 0.35); top: -50px; left: -50px; }
+        .orb-emerald { width: 450px; height: 450px; background: rgba(21, 51, 42, 0.6); bottom: -100px; right: -50px; animation-delay: -5s; }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(80px, 50px) scale(1.2); }
+        }
+
+        /* TARJETA DE REGISTRO */
+        .auth-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255, 255, 255, 0.8);
+            width: 100%;
+            max-width: 480px; /* Más ancho por la cantidad de inputs */
+            padding: 3.5rem 2.5rem;
+            position: relative;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: slideUpCard 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.2s;
+        }
+
+        @keyframes slideUpCard {
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .brand-icon {
+            font-size: 2.2rem;
+            color: var(--accent-gold);
+            margin-bottom: 0.5rem;
+            display: inline-block;
+            animation: gentlePulse 3s infinite;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.5)); }
+        }
+
+        .brand-title {
+            font-family: 'Cormorant Garamond', serif;
+            color: var(--text-dark);
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+        }
+
+        .subtitle {
+            color: var(--accent-gold);
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+            margin-bottom: 1.2rem;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+        }
+
+        .form-control-custom {
+            width: 100%;
+            padding: 15px 16px 15px 50px;
+            border: 2px solid transparent;
+            border-bottom: 2px solid #e2e8f0;
+            background-color: rgba(248, 250, 252, 0.6);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            transition: all 0.3s ease;
+        }
+
+        .form-control-custom:focus {
+            outline: none;
+            border-bottom-color: var(--accent-gold);
+            background-color: #ffffff;
+            box-shadow: 0 15px 25px -5px rgba(212, 175, 55, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .form-control-custom:focus + .input-icon {
+            color: var(--accent-gold);
+            transform: translateY(-50%) scale(1.2);
+        }
+
+        .btn-action {
+            background: linear-gradient(135deg, var(--text-dark), #1e293b);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 16px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 1.5rem;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 30px -10px rgba(15, 23, 42, 0.6);
+            background: linear-gradient(135deg, #1e293b, var(--text-dark));
+        }
+
+        .links-footer {
+            margin-top: 2rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .link-custom {
+            color: var(--text-dark);
+            font-weight: 700;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .link-custom:hover { color: var(--accent-gold); }
+
+        .alert-custom {
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #ef4444;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 0.85rem;
+        }
+    </style>
 </head>
-<body class="d-flex align-items-center justify-content-center min-vh-100">
+<body>
 
-<div class="login-card text-center">
-    <div class="mb-3">
-        <i class="fa-solid fa-champagne-glasses brand-icon"></i>
-    </div>
-    <h3 class="fw-bold text-dark mb-1">Crea tu Cuenta</h3>
-    <p class="text-muted small mb-4">Únete a Link & Celebrate y diseña tu primera invitación</p>
+<!-- Capas de Profundidad -->
+<div class="bg-image"></div>
+<div class="bg-overlay"></div>
+<div class="light-orb orb-gold"></div>
+<div class="light-orb orb-emerald"></div>
 
-    <!-- Alerta de Error -->
-    <div th:if="${error}" class="alert alert-danger py-2 small mb-3" th:text="${error}"></div>
+<div class="container px-3 position-relative z-3">
+    <div class="auth-card mx-auto text-center">
 
-    <form th:action="@{/registro}" method="post">
-        <!-- Campo Unificado: Nombre Completo -->
-        <div class="form-floating mb-3 text-start">
-            <input type="text" class="form-control" id="nombreCompleto" name="nombreCompleto" placeholder="Nombre Completo" required>
-            <label for="nombreCompleto"><i class="fa-solid fa-user me-2"></i>Nombre Completo</label>
+        <i class="fa-solid fa-gift brand-icon"></i>
+        <h1 class="brand-title">Crea tu Cuenta</h1>
+        <span class="subtitle d-block">Únete a Link & Celebrate</span>
+
+        <!-- Mensaje de Error (Si el email ya existe) -->
+        <div th:if="${error}" class="alert alert-custom mb-4 text-start">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> <span th:text="${error}"></span>
         </div>
 
-        <!-- Campo: Correo Electrónico -->
-        <div class="form-floating mb-3 text-start">
-            <input type="email" class="form-control" id="email" name="email" placeholder="Correo Electrónico" required>
-            <label for="email"><i class="fa-solid fa-envelope me-2"></i>Correo Electrónico</label>
+        <!-- Formulario apunta al Controlador que configuramos con Auto-Login -->
+        <form th:action="@{/registro}" method="post">
+
+            <div class="input-group-custom text-start">
+                <input type="text" id="nombreCompleto" name="nombreCompleto" class="form-control-custom" placeholder="Nombre completo" required autofocus>
+                <i class="fa-solid fa-user input-icon"></i>
+            </div>
+
+            <div class="input-group-custom text-start">
+                <input type="email" id="email" name="email" class="form-control-custom" placeholder="Correo electrónico" required>
+                <i class="fa-solid fa-envelope input-icon"></i>
+            </div>
+
+            <div class="input-group-custom text-start">
+                <input type="tel" id="telefono" name="telefono" class="form-control-custom" placeholder="Teléfono (Opcional)">
+                <i class="fa-solid fa-phone input-icon"></i>
+            </div>
+
+            <div class="input-group-custom text-start">
+                <input type="password" id="password" name="password" class="form-control-custom" placeholder="Contraseña" required minlength="6">
+                <i class="fa-solid fa-lock input-icon"></i>
+            </div>
+
+            <button type="submit" class="btn-action">
+                Registrarse
+            </button>
+        </form>
+
+        <div class="links-footer">
+            <p class="mb-0">¿Ya tienes una cuenta? <a th:href="@{/login}" class="link-custom">Inicia sesión</a></p>
         </div>
 
-        <!-- Campo: Teléfono -->
-        <div class="form-floating mb-3 text-start">
-            <input type="text" class="form-control" id="telefono" name="telefono" placeholder="Teléfono" required>
-            <label for="telefono"><i class="fa-solid fa-phone me-2"></i>Teléfono</label>
-        </div>
-
-        <!-- Campo: Contraseña -->
-        <div class="form-floating mb-4 text-start">
-            <input type="password" class="form-control" id="password" name="password" placeholder="Contraseña" required>
-            <label for="password"><i class="fa-solid fa-lock me-2"></i>Contraseña</label>
-        </div>
-
-        <button type="submit" class="btn btn-login w-100 mb-3">
-            Registrarse
-        </button>
-
-        <div class="mt-2 pt-3 border-top">
-            <p class="small text-muted mb-0">¿Ya tienes una cuenta?
-                <a th:href="@{/login}" class="text-warning fw-bold text-decoration-none ms-1">Inicia Sesión</a>
-            </p>
-        </div>
-    </form>
-
-    <div class="mt-3">
-        <a th:href="@{/}" class="text-decoration-none text-muted small">
-            <i class="fa-solid fa-arrow-left me-1"></i> Volver al inicio
-        </a>
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -38,13 +38,14 @@ public class InvitadosServiceImplements implements InvitadosService {
     @Override
     public Invitados updateInvitado(Integer id, Invitados invitado) {
         Invitados existente = getInvitadoById(id);
-        existente.setNombre(invitado.getNombre());
-        existente.setEmail(invitado.getEmail());
+
+        // CORREGIDO: Solo usamos los setters de las variables que realmente existen
+        existente.setNombreInvitado(invitado.getNombreInvitado());
         existente.setTelefono(invitado.getTelefono());
-        existente.setEstado(invitado.getEstado());
-        existente.setAcompanantes(invitado.getAcompanantes());
-        existente.setRestriccionesAlimentarias(invitado.getRestriccionesAlimentarias());
+        existente.setAsistencia(invitado.getAsistencia());
+        existente.setComentarios(invitado.getComentarios());
         existente.setFkIdInvitacion(invitado.getFkIdInvitacion());
+
         return invitadosRepository.save(existente);
     }
 

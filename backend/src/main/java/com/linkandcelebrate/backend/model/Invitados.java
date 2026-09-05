@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import java.time.LocalDateTime;
+import java.util.UUID; // <--- Importante para el código QR
 
 @Entity
 @Table(name = "invitados")
@@ -16,27 +18,41 @@ public class Invitados {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_invitado")
+    @Column(name = "invitado_id")
     private Integer idInvitado;
 
-    @Column(name = "nombre", nullable = false, length = 150)
-    private String nombre;
+    @Column(name = "invitacion_id", nullable = false)
+    private Integer fkIdInvitacion;
 
-    @Column(name = "email", length = 150)
-    private String email;
+    @Column(name = "nombre_invitado", nullable = false, length = 155)
+    private String nombreInvitado;
 
-    @Column(name = "telefono", length = 50)
+    @Column(name = "telefono", length = 25)
     private String telefono;
-
-    @Column(name = "estado", nullable = false, length = 50)
-    private String estado; // "CONFIRMADO", "PENDIENTE", "RECHAZADO"
 
     @Column(name = "acompanantes")
     private Integer acompanantes;
 
-    @Column(name = "restricciones_alimentarias", length = 255)
-    private String restriccionesAlimentarias;
+    @Column(name = "asistencia")
+    private String asistencia;
 
-    @Column(name = "fk_id_invitacion", nullable = false)
-    private Integer fkIdInvitacion;
+    @Column(name = "comentarios", columnDefinition = "TEXT")
+    private String comentarios;
+
+    // ==========================================
+    // NUEVO: CAMPO PARA EL TOKEN SECRETO DEL QR
+    // ==========================================
+    @Column(name = "token_qr", unique = true, length = 36)
+    private String tokenQr;
+
+    @Column(name = "fecha_confirmacion", insertable = false, updatable = false)
+    private LocalDateTime fechaConfirmacion;
+
+    // Se ejecuta automáticamente antes de guardar en la BD para generar el código único
+    @PrePersist
+    public void generarTokenQr() {
+        if (this.tokenQr == null) {
+            this.tokenQr = UUID.randomUUID().toString();
+        }
+    }
 }

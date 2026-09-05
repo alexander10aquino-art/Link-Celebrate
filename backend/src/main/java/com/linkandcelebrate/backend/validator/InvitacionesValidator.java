@@ -1,17 +1,15 @@
 package com.linkandcelebrate.backend.validator;
 
 import com.linkandcelebrate.backend.model.Invitaciones;
-import org.springframework.stereotype.Component; // <-- Asegúrate de importar esto
+import org.springframework.stereotype.Component;
 
-@Component // <-- ¡ESTA ES LA ETIQUETA MÁGICA!
+@Component
 public class InvitacionesValidator {
 
     public void validar(Invitaciones invitacion) {
-        // ... (todo el código que ya tienes adentro se queda exactamente igual)
-
-        if (invitacion.getTitulo() == null || invitacion.getTitulo().trim().isEmpty()) {
+        // Usamos getTituloEvento(), NO getTitulo()
+        if (invitacion.getTituloEvento() == null || invitacion.getTituloEvento().trim().isEmpty()) {
             throw new IllegalArgumentException("El título del evento es obligatorio.");
         }
-        // ...
     }
 }

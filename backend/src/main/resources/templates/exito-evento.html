@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Evento Guardado! | Link & Celebrate</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    :root {
+        --bg-dark: #0f172a;
+        --accent-gold: #d4af37;
+        --text-dark: #0f172a;
+    }
+
+    body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #0b1120 0%, #1e293b 100%);
+        margin: 0;
+        padding: 20px;
+    }
+
+    .success-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        width: 100%;
+        max-width: 500px;
+        padding: 3.5rem 2.5rem;
+        text-align: center;
+        animation: slideUpFade 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUpFade {
+        from { transform: translateY(30px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .icon-circle {
+        width: 80px;
+        height: 80px;
+        background-color: rgba(37, 211, 102, 0.1);
+        color: #25D366;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        margin: 0 auto 1.5rem auto;
+        border: 2px solid rgba(37, 211, 102, 0.3);
+    }
+
+    .title {
+        font-family: 'Cormorant Garamond', serif;
+        color: var(--text-dark);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-name {
+        color: var(--accent-gold);
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .btn-whatsapp {
+        background-color: #25D366;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 16px 20px;
+        font-size: 1rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        width: 100%;
+        margin-top: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-whatsapp:hover {
+        background-color: #1ebe57;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+    }
+
+    .btn-dashboard {
+        background-color: transparent;
+        color: var(--text-dark);
+        border: 2px solid #e2e8f0;
+        border-radius: 50px;
+        padding: 14px 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        width: 100%;
+        margin-top: 1rem;
+        display: block;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .btn-dashboard:hover {
+        background-color: #f8fafc;
+        border-color: var(--text-dark);
+        color: var(--text-dark);
+    }
+  </style>
+</head>
+<body>
+
+<div class="success-card">
+  <div class="icon-circle">
+    <i class="fa-solid fa-check"></i>
+  </div>
+
+  <h1 class="title">¡Formulario Exitoso!</h1>
+  <p class="text-muted mb-4">Los datos principales para <span class="event-name" th:text="${nombreEvento}">Tu Evento</span> ya están guardados en el sistema.</p>
+
+  <div class="p-3 mb-4 rounded-3" style="background-color: #f8fafc; border: 1px dashed #cbd5e1;">
+    <h6 class="fw-bold text-dark mb-2"><i class="fa-solid fa-camera text-warning me-2"></i>Paso Final: Tus Archivos</h6>
+    <p class="text-muted small mb-0">Para entregar tu invitación necesitamos que nos envíes tus fotografías y la canción por WhatsApp.</p>
+  </div>
+
+  <!-- 1. Botón de WhatsApp (Se abre en otra pestaña) -->
+  <a th:href="${urlWhatsapp}" target="_blank" class="btn-whatsapp">
+    <i class="fa-brands fa-whatsapp fs-4"></i> Enviar Archivos a Soporte
+  </a>
+
+  <!-- 2. Botón para ir al Dashboard -->
+  <a th:href="@{/dashboard}" class="btn-dashboard">
+    Ir a mi Dashboard <i class="fa-solid fa-arrow-right ms-2"></i>
+  </a>
+</div>
+
+</body>
+</html>

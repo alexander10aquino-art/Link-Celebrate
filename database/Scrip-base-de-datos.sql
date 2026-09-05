@@ -62,16 +62,15 @@ CREATE TABLE `invitaciones` (
   `tipo_paquete` enum('basico','premium','vip') NOT NULL,
   `fecha_evento` datetime NOT NULL,
   `slug_url` varchar(100) NOT NULL,
-  `estado_pago` enum('pendiente','completado','reembolsado') DEFAULT 'pendiente',
+  `estado_pago` varchar(20) DEFAULT NULL,
   `fecha_creacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`invitacion_id`),
   UNIQUE KEY `titulo_evento` (`titulo_evento`),
   UNIQUE KEY `slug_url` (`slug_url`),
   KEY `usuario_id` (`usuario_id`),
   KEY `plantilla_id` (`plantilla_id`),
-  CONSTRAINT `invitaciones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON DELETE CASCADE,
-  CONSTRAINT `invitaciones_ibfk_2` FOREIGN KEY (`plantilla_id`) REFERENCES `plantillas_catalogo` (`plantilla_id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `invitaciones_ibfk_1` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`usuario_id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -80,7 +79,7 @@ CREATE TABLE `invitaciones` (
 
 LOCK TABLES `invitaciones` WRITE;
 /*!40000 ALTER TABLE `invitaciones` DISABLE KEYS */;
-INSERT INTO `invitaciones` VALUES (1,2,3,'Mis 15 Años - Valerie','vip','2027-02-14 19:00:00','xv-valerie','completado','2026-07-16 04:40:15');
+INSERT INTO `invitaciones` VALUES (1,2,3,'Mis 15 Años - Valerie','vip','2027-02-14 19:00:00','xv-valerie','completado','2026-08-19 14:06:54'),(2,3,1,'BODA JEREMY ABI','vip','2027-02-10 06:00:00','https://plantilla1xvlinkandcelebrate.netlify.app/','Pagado','2026-08-19 14:14:16'),(4,3,1,' JEREMY Y ABI','premium','2027-02-10 06:00:00','evento-1787162334629','Pendiente','2026-08-19 17:58:54'),(5,3,1,'Jeremy','premium','2027-02-24 06:00:00','evento-1787162465356','completado','2026-08-19 18:01:05'),(12,3,18,'BODA VIVI Y LEO','premium','2027-02-10 06:00:00','evento-1787624411026','completado','2026-08-25 02:20:11'),(13,7,6,'15 abi','basico','2026-08-23 06:00:00','evento-1787629982993','completado','2026-08-25 03:53:03'),(14,8,6,'XV ABYY','basico','2027-02-10 06:00:00','https://plantilla1xvlinkandcelebrate.netlify.app','Pagado','2026-08-25 04:23:22'),(15,9,3,'ALISON Y ALEX','vip','2027-02-10 06:00:00','https://plantilla1viplinkandcelebrate.netlify.app/','Pagado','2026-09-04 05:24:16'),(16,10,3,'BODA JEREMY Y ABIGAIL','vip','2027-02-10 06:00:00','evento-1788645881875','pendiente','2026-09-05 22:04:41');
 /*!40000 ALTER TABLE `invitaciones` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -99,10 +98,13 @@ CREATE TABLE `invitados` (
   `asistencia` enum('confirmado','cancelado','pendiente') DEFAULT 'pendiente',
   `comentarios` text,
   `fecha_confirmacion` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `acompanantes` int DEFAULT '0',
+  `token_qr` varchar(36) DEFAULT NULL,
   PRIMARY KEY (`invitado_id`),
+  UNIQUE KEY `token_qr` (`token_qr`),
   KEY `invitacion_id` (`invitacion_id`),
   CONSTRAINT `invitados_ibfk_1` FOREIGN KEY (`invitacion_id`) REFERENCES `invitaciones` (`invitacion_id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +113,7 @@ CREATE TABLE `invitados` (
 
 LOCK TABLES `invitados` WRITE;
 /*!40000 ALTER TABLE `invitados` DISABLE KEYS */;
-INSERT INTO `invitados` VALUES (1,1,'Gabriel Calderón','+50250501122','confirmado','¡Ahí estaré sin falta!','2026-07-16 04:40:15'),(2,1,'David Quintanilla','+50240403344','confirmado','Menú vegetariano, por favor.','2026-07-16 04:40:15'),(3,1,'Andrés Callejas','+50230305566','cancelado','Lo siento, no puedo acudir.','2026-07-16 04:40:15'),(4,1,'abigail corado','+50220207788','pendiente','Confirmamos en la semana.','2026-07-16 04:40:15');
+INSERT INTO `invitados` VALUES (1,1,'Gabriel Calderón','+50250501122','confirmado','¡Ahí estaré sin falta!','2026-08-19 14:06:54',0,NULL),(2,1,'Jeremy Aquino','+50240403344','confirmado','Menú vegetariano, por favor.','2026-08-19 14:06:54',0,NULL),(3,1,'Gustavo Aquino','+50230305566','cancelado','Lo siento, no puedo acudir.','2026-08-19 14:06:54',0,NULL),(4,1,'abigail corado','+50220207788','pendiente','Confirmamos en la semana.','2026-08-19 14:06:54',0,NULL),(5,2,'JEREM','5464646','confirmado','SSS','2026-08-19 16:31:41',0,NULL),(9,2,'ALISON CORADOOO','36095150','pendiente',NULL,'2026-08-19 19:06:23',2,NULL),(10,13,'Jeremy ','36095150','pendiente',NULL,'2026-08-25 03:54:27',2,NULL),(11,14,'ALEX AQUINO','45321123','pendiente',NULL,'2026-08-25 04:24:05',1,NULL),(12,2,'RODRIGO','45321123','confirmado',NULL,'2026-08-27 03:42:33',3,NULL),(16,2,'Jeremy alexander','30092675','confirmado',NULL,'2026-09-04 00:47:53',2,NULL),(17,2,'rodrigo muralles','45321123','pendiente',NULL,'2026-09-04 03:14:04',2,'66dd083f-a741-4cd4-aba7-ca4a4df81519'),(18,15,'ALEX AQUINO','30092675','confirmado',NULL,'2026-09-04 05:50:23',2,'9ceb7c60-987b-4596-a0e6-1dddc19d61a3'),(19,16,'ANGELA OCHOA ','30092675','pendiente',NULL,'2026-09-05 22:05:19',2,'74b8fb2f-b861-4b10-ac3a-5e6b8ea05f22');
 /*!40000 ALTER TABLE `invitados` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -142,7 +144,7 @@ CREATE TABLE `pagos` (
 
 LOCK TABLES `pagos` WRITE;
 /*!40000 ALTER TABLE `pagos` DISABLE KEYS */;
-INSERT INTO `pagos` VALUES (1,1,349.99,'paypal','PAYID-LMN456789OP','2026-07-16 04:40:15');
+INSERT INTO `pagos` VALUES (1,1,349.99,'paypal','PAYID-LMN456789OP','2026-08-19 14:06:54');
 /*!40000 ALTER TABLE `pagos` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -160,7 +162,7 @@ CREATE TABLE `plantillas_catalogo` (
   `imagen_preview_url` varchar(255) NOT NULL,
   `es_premium_vip` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`plantilla_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -169,7 +171,7 @@ CREATE TABLE `plantillas_catalogo` (
 
 LOCK TABLES `plantillas_catalogo` WRITE;
 /*!40000 ALTER TABLE `plantillas_catalogo` DISABLE KEYS */;
-INSERT INTO `plantillas_catalogo` VALUES (1,'Elegancia Clásica','boda','https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=400',0),(2,'Neon Night Party','cumpleanos','https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=400',0),(3,'Mis 15 Rosas','quinceanos','https://images.unsplash.com/photo-1549417229-aa67d3263c09?auto=format&fit=crop&q=80&w=400',1),(4,'Minimalist Golden','boda','https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400',1),(5,'Graduation Day','graduacion','https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=400',0);
+INSERT INTO `plantillas_catalogo` VALUES (1,'Elegancia Clásica','boda','https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=400',0),(2,'Neon Night Party','cumpleanos','https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&q=80&w=400',0),(3,'Mis 15 Rosas','quinceanos','https://images.unsplash.com/photo-1549417229-aa67d3263c09?auto=format&fit=crop&q=80&w=400',1),(4,'Minimalist Golden','boda','https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&q=80&w=400',1),(5,'Graduation Day','graduacion','https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&q=80&w=400',0),(6,'','quinceanos','',0),(7,'','quinceanos','',0),(8,'','quinceanos','',0),(9,'','quinceanos','',0),(10,'','quinceanos','',0);
 /*!40000 ALTER TABLE `plantillas_catalogo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -189,7 +191,7 @@ CREATE TABLE `usuarios` (
   `fecha_registro` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`usuario_id`),
   UNIQUE KEY `gmail` (`gmail`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -198,382 +200,9 @@ CREATE TABLE `usuarios` (
 
 LOCK TABLES `usuarios` WRITE;
 /*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (1,'Jeremy Alexander','jeremy@email.com','$2a$12$EjemploHashPasswordFuerte','+50255551234','2026-07-16 04:40:15'),(2,'Valerie Calderón','valerie@email.com','$2a$12$EjemploHashPasswordFuerte2','+50244445678','2026-07-16 04:40:15');
+INSERT INTO `usuarios` VALUES (1,'Jeremy Alexander','jeremy@email.com','$2a$12$EjemploHashPasswordFuerte','+50255551234','2026-08-19 14:06:54'),(2,'Valerie Calderón','valerie@email.com','$2a$12$EjemploHashPasswordFuerte2','+50244445678','2026-08-19 14:06:54'),(3,'Jeremy Alexander Aquino Ochoa','alexander10aquino@gmail.com','$2a$10$YRyTLV0B/PCrpB0dM1FcWuqYn0uW7/B6nMtveBFZ1NKEIHm2znb6C','46464646','2026-08-19 14:13:26'),(6,'Rodrigo Muralles','rodrigodavidsosamuralle@gmail.com','$2a$10$5TNwWzrX8GeUTkkVcwSm6.kweA7lDTh.hivBVBM4x7vP3TkVEVmvm','45321123','2026-08-20 02:05:54'),(7,'Alison corado ','abigailcoradosarceno@gmail.com','$2a$10$HZJbFcmlUSb2mwLLKH3jHup9L.9/FAcXbulk58f0K7ro9XV4LUqAe','36095150','2026-08-25 03:44:31'),(8,'jose alexander ramirez chep ','alexander100aquino@gmail.com','$2a$10$hgBhVL.DNVhyR71GrsQx9.nmEArJyXt9w3BJ9DgSDxhFLoEzwK7M2','46098451','2026-08-25 04:15:54'),(9,'JEREMY ALEXANDER','jeremy10aquino@gmail.com','$2a$10$JyLQJa.oxMI0itePd2Q.6OGjawhYHzHGb/GQR21QeiMdmgxqWPxRO','46098451','2026-09-04 05:21:57'),(10,'alexander aquino','alexander20aquino@gmail.com','$2a$10$fJsOJTa/Ow/t8UD6G6yUwu81Lh6hEGMaGMDiIG822aFdTJt08FB06','30092675','2026-09-05 21:40:04');
 /*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
-
---
--- Dumping routines for database 'link_and_celebrate'
---
-/*!50003 DROP PROCEDURE IF EXISTS `sp_actualizar_asistencia_manual` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_actualizar_asistencia_manual`(
-    in p_invitado_id int,
-    in p_nueva_asistencia enum('confirmado', 'cancelado', 'pendiente')
-)
-begin
-    update invitados 
-    set asistencia = p_nueva_asistencia
-    where invitado_id = p_invitado_id;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_actualizar_perfil_usuario` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_actualizar_perfil_usuario`(
-    in p_usuario_id int,
-    in p_nombre varchar(100),
-    in p_telefono varchar(100)
-)
-begin
-    update usuarios 
-    set nombre = p_nombre, telefono = p_telefono 
-    where usuario_id = p_usuario_id;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_crear_invitacion_con_pago` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_crear_invitacion_con_pago`(
-    in p_usuario_id int,
-    in p_plantilla_id int,
-    in p_titulo_evento varchar(250),
-    in p_tipo_paquete enum('basico', 'premium', 'vip'),
-    in p_fecha_evento datetime,
-    in p_slug_url varchar(100),
-    in p_monto decimal(10, 2),
-    in p_metodo_pago enum('tarjeta', 'transferencia', 'deposito', 'paypal'),
-    in p_referencia varchar(100)
-)
-begin
-    declare v_invitacion_id int;
-
-    insert into invitaciones (usuario_id, plantilla_id, titulo_evento, tipo_paquete, fecha_evento, slug_url, estado_pago)
-    values (p_usuario_id, p_plantilla_id, p_titulo_evento, p_tipo_paquete, p_fecha_evento, p_slug_url, 'completado');
-    
-    set v_invitacion_id = last_insert_id();
-    
-    insert into pagos (invitacion_id, monto, metodo_pago, referencia_transaccion)
-    values (v_invitacion_id, p_monto, p_metodo_pago, p_referencia);
-    
-
-    insert into detalles_invitacion (invitacion_id)
-    values (v_invitacion_id);
-    
-    select v_invitacion_id as nuevo_evento_id;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_eliminar_invitado_vip` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_eliminar_invitado_vip`(
-    in p_invitado_id int
-)
-begin
-    delete from invitados 
-    where invitado_id = p_invitado_id;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_guardar_detalles_invitacion` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_guardar_detalles_invitacion`(
-    in p_invitacion_id int,
-    in p_musica_url varchar(250),
-    in p_waze_url varchar(255),
-    in p_maps_url varchar(255),
-    in p_frase text,
-    in p_vestimenta varchar(100),
-    in p_regalos varchar(255)
-)
-begin
-    insert into detalles_invitacion (invitacion_id, musica_url, ubicacion_waze_url, ubicacion_maps_url, frase_bienvenida, vestimenta_sugerida, link_mesa_regalo)
-    values (p_invitacion_id, p_musica_url, p_waze_url, p_maps_url, p_frase, p_vestimenta, p_regalos)
-    on duplicate key update
-        musica_url = p_musica_url,
-        ubicacion_waze_url = p_waze_url,
-        ubicacion_maps_url = p_maps_url,
-        frase_bienvenida = p_frase,
-        vestimenta_sugerida = p_vestimenta,
-        link_mesa_regalo = p_regalos;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_listar_catalogo` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_listar_catalogo`()
-begin
-    select plantilla_id, nombre_diseno, categoria, imagen_preview_url, es_premium_vip 
-    from plantillas_catalogo
-    order by categoria, nombre_diseno;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_listar_invitaciones_usuario` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_listar_invitaciones_usuario`(
-    in p_usuario_id int
-)
-begin
-    select 
-        i.invitacion_id,
-        i.titulo_evento,
-        i.tipo_paquete,
-        i.fecha_evento,
-        i.slug_url,
-        i.estado_pago,
-        pc.nombre_diseno,
-        pc.imagen_preview_url
-    from invitaciones i
-    left join plantillas_catalogo pc on i.plantilla_id = pc.plantilla_id
-    where i.usuario_id = p_usuario_id
-    order by i.fecha_creacion desc;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_listar_invitados_vip` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_listar_invitados_vip`(
-    in p_invitacion_id int
-)
-begin
-    select 
-        invitado_id,
-        nombre_invitado,
-        telefono,
-        asistencia,
-        comentarios,
-        fecha_confirmacion
-    from invitados
-    where invitacion_id = p_invitacion_id
-    order by fecha_confirmacion desc;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_obtener_configuracion_invitacion` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_obtener_configuracion_invitacion`(
-    in p_slug_url varchar(100)
-)
-begin
-    select 
-        i.invitacion_id,
-        i.titulo_evento,
-        i.tipo_paquete,
-        i.fecha_evento,
-        i.slug_url,
-        d.musica_url,
-        d.ubicacion_waze_url,
-        d.ubicacion_maps_url,
-        d.frase_bienvenida, -- Tu columna corregida
-        d.vestimenta_sugerida,
-        d.link_mesa_regalo   -- Tu columna corregida
-    from invitaciones i
-    left join detalles_invitacion d on i.invitacion_id = d.invitacion_id
-    where i.slug_url = p_slug_url;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_obtener_estadisticas_vip` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_obtener_estadisticas_vip`(
-    in p_invitacion_id int
-)
-begin
-    select 
-        count(*) as total_invitados,
-        coalesce(sum(case when asistencia = 'confirmado' then 1 else 0 end), 0) as total_confirmados,
-        coalesce(sum(case when asistencia = 'cancelado' then 1 else 0 end), 0) as total_cancelados,
-        coalesce(sum(case when asistencia = 'pendiente' then 1 else 0 end), 0) as total_pendientes
-    from invitados
-    where invitacion_id = p_invitacion_id;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_obtener_usuario_por_email` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_obtener_usuario_por_email`(
-    in p_gmail varchar(100)
-)
-begin
-    select usuario_id, nombre, gmail, contrasena, telefono, fecha_registro 
-    from usuarios 
-    where gmail = p_gmail;
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_registrar_rsvp` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_registrar_rsvp`(
-    in p_invitacion_id int,
-    in p_nombre_invitado varchar(155),
-    in p_telefono varchar(25),
-    in p_asistencia enum('confirmado', 'cancelado', 'pendiente'),
-    in p_comentarios text
-)
-begin
-    insert into invitados (invitacion_id, nombre_invitado, telefono, asistencia, comentarios)
-    values (p_invitacion_id, p_nombre_invitado, p_telefono, p_asistencia, p_comentarios);
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
-/*!50003 DROP PROCEDURE IF EXISTS `sp_registrar_usuario` */;
-/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
-/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
-/*!50003 SET @saved_col_connection = @@collation_connection */ ;
-/*!50003 SET character_set_client  = utf8mb4 */ ;
-/*!50003 SET character_set_results = utf8mb4 */ ;
-/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
-/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
-/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
-DELIMITER ;;
-CREATE DEFINER=`JeremyAquino`@`localhost` PROCEDURE `sp_registrar_usuario`(
-    in p_nombre varchar(100),
-    in p_gmail varchar(100),
-    in p_contrasena varchar(100),
-    in p_telefono varchar(100)
-)
-begin
-    insert into usuarios (nombre, gmail, contrasena, telefono)
-    values (p_nombre, p_gmail, p_contrasena, p_telefono);
-end ;;
-DELIMITER ;
-/*!50003 SET sql_mode              = @saved_sql_mode */ ;
-/*!50003 SET character_set_client  = @saved_cs_client */ ;
-/*!50003 SET character_set_results = @saved_cs_results */ ;
-/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -584,4 +213,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-07-23  7:31:28
+-- Dump completed on 2026-09-05 17:53:00

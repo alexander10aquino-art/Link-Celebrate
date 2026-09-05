@@ -1,124 +1,428 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Link & Celebrate | Invitaciones Digitales</title>
+    <title>Inicio | Link & Celebrate</title>
 
-    <!-- Bootstrap 5 CSS -->
+    <!-- Fuentes Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome para Iconos -->
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- CSS Personalizado (static/style-home.css) -->
-    <link rel="stylesheet" th:href="@{/style-home.css}">
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --primary-dark: #0f172a;
+            --accent-gold: #d4af37;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --card-radius: 24px;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        /* HERO SECTION CINEMATOGRÁFICO */
+        .main-hero {
+            position: relative;
+            background-color: #05080f;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .bg-image {
+            position: absolute;
+            top: -10%; left: -10%;
+            width: 120%; height: 120%;
+            background-image: url('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            filter: blur(8px);
+            animation: kenBurns 25s infinite alternate ease-in-out;
+            z-index: 0;
+            opacity: 0.6;
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15) rotate(1deg); }
+        }
+
+        .bg-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(5, 8, 15, 0.8) 100%);
+            z-index: 1;
+        }
+
+        /* Orbes de Luz */
+        .light-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: 2;
+            animation: floatOrb 15s infinite ease-in-out alternate;
+            pointer-events: none;
+        }
+        .orb-gold { width: 400px; height: 400px; background: rgba(212, 175, 55, 0.25); top: 10%; left: 10%; }
+        .orb-blue { width: 500px; height: 500px; background: rgba(56, 189, 248, 0.15); bottom: -10%; right: -5%; animation-delay: -5s; }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(60px, 40px) scale(1.2); }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
+
+        .hero-title {
+            color: #ffffff;
+            font-size: clamp(3rem, 6vw, 5.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .hero-subtitle {
+            color: var(--accent-gold);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text {
+            color: #cbd5e1;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto 2.5rem auto;
+            line-height: 1.8;
+        }
+
+        /* BOTONES PREMIUM */
+        .btn-gold-solid {
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border: none;
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+
+        .btn-gold-solid:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4);
+            color: var(--primary-dark);
+            background: #e5c048;
+        }
+
+        .btn-outline-light {
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 14px 32px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-outline-light:hover {
+            background: #ffffff;
+            color: var(--primary-dark);
+            transform: translateY(-3px);
+        }
+
+        /* SECCIÓN: ¿POR QUÉ ELEGIRNOS? */
+        .features-section {
+            padding: 8rem 0;
+            background-color: var(--bg-body);
+            position: relative;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border-radius: var(--card-radius);
+            padding: 3rem 2rem;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 15px 35px -15px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            height: 100%;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.12);
+            border-color: var(--accent-gold);
+        }
+
+        .feature-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            color: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+            margin: 0 auto 1.5rem auto;
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover .feature-icon-wrapper {
+            background: var(--accent-gold);
+            color: #ffffff;
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        /* SECCIÓN: PERÍODO DE PRUEBA (TRIAL) */
+        .trial-section {
+            background: var(--primary-dark);
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+            color: #ffffff;
+        }
+
+        .trial-section::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: radial-gradient(circle at 80% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .trial-badge {
+            background: rgba(212, 175, 55, 0.15);
+            color: var(--accent-gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+
+        .glass-box {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        .step-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .step-number {
+            width: 45px;
+            height: 45px;
+            background: var(--accent-gold);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+            margin-right: 1.5rem;
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* FOOTER / CALL TO ACTION */
+        .cta-section {
+            padding: 6rem 0;
+            text-align: center;
+            background: #ffffff;
+            border-top: 1px solid #f1f5f9;
+        }
+    </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
-    <div class="container">
-        <a class="navbar-brand fw-bold" th:href="@{/}">
-            <i class="fa-solid fa-champagne-glasses me-2"></i>Link & Celebrate
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item">
-                    <a class="nav-link active" th:href="@{/}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" th:href="@{/plantillas-catalogo}">Catálogo</a>
-                </li>
-                <li class="nav-item ms-lg-3">
-                    <a class="btn btn-secondary-dark-custom" th:href="@{/login}">
-                        <i class="fa-solid fa-right-to-bracket me-1"></i> Iniciar Sesión
-                    </a>
-                </li>
-            </ul>
+<!-- NAVBAR PRINCIPAL -->
+<div th:replace="~{navbar :: menu_superior}"></div>
+
+<!-- 1. HERO SECTION -->
+<section class="main-hero">
+    <div class="bg-image"></div>
+    <div class="bg-overlay"></div>
+    <div class="light-orb orb-gold"></div>
+    <div class="light-orb orb-blue"></div>
+
+    <div class="container hero-content">
+        <span class="hero-subtitle">La Nueva Era de las Celebraciones</span>
+        <h1 class="hero-title">Invitaciones de <br> Alta Costura Digital</h1>
+        <p class="hero-text">Control de acceso QR, confirmación de invitados en tiempo real y diseños editoriales. Eleva el nivel de tu evento desde el primer clic.</p>
+
+        <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
+
+            <!-- VISTA PARA USUARIOS NO LOGUEADOS (Anónimos) -->
+            <th:block sec:authorize="isAnonymous()">
+                <a th:href="@{/plantillas-catalogo}" class="btn-gold-solid">Ver Colección</a>
+                <a th:href="@{/registro}" class="btn-outline-light">Crear mi Cuenta</a>
+            </th:block>
+
+            <!-- VISTA PARA USUARIOS LOGUEADOS (Autenticados) -->
+            <th:block sec:authorize="isAuthenticated()">
+                <a th:href="@{/plantillas-catalogo}" class="btn-gold-solid">Ver Catálogo</a>
+                <a th:href="@{/dashboard}" class="btn-outline-light"><i class="fa-solid fa-chart-line me-2"></i> Mi Dashboard</a>
+            </th:block>
+
         </div>
     </div>
-</nav>
+</section>
 
-<!-- HERO SECTION -->
-<header class="hero-section text-center py-5">
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                    <span class="badge bg-warning text-dark px-3 py-2 rounded-pill mb-3 fw-semibold">
-                        <i class="fa-solid fa-star me-1"></i> Eventos e Invitaciones VIP
-                    </span>
-                <h1 class="display-4 fw-bold mb-3 text-secondary-dark">
-                    Invita a tus Eventos Inolvidables
-                </h1>
-                <p class="lead text-muted mb-4">
-                    Diseña invitaciones interactivas para bodas, XV años, cumpleaños o cualquier evento. Gestiona la confirmación de tus invitados en tiempo real por la tabla de usuaario VIP.
-                </p>
-                <div class="d-flex justify-content-center gap-3">
-                    <a th:href="@{/plantillas-catalogo}" class="btn btn-secondary-dark-custom btn-lg">
-                        Explorar Catálogo <i class="fa-solid fa-arrow-right ms-2"></i>
-                    </a>
-                    <a th:href="@{/login}" class="btn btn-outline-dark-custom btn-lg">
-                        Acceso Clientes
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
-
-<!-- CARACTERÍSTICAS -->
-<section class="py-5 bg-white">
+<!-- 2. BENEFICIOS -->
+<section class="features-section">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold text-secondary-dark">¿Por qué elegir Link & Celebrate?</h2>
-            <p class="text-muted">Todo lo que necesitas para que la gestión de tus invitados sea simple y elegante.</p>
+        <div class="section-header">
+            <h2 class="hero-title" style="color: var(--primary-dark); font-size: 3rem;">¿Por qué elegir Link & Celebrate?</h2>
+            <p class="text-muted fs-5">Todo lo que necesitas para que la gestión de tu evento sea simple, moderna y elegante.</p>
         </div>
 
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <div class="card card-custom h-100 p-4">
-                    <div class="display-5 title-gold mb-3">
-                        <i class="fa-solid fa-wand-magic-sparkles"></i>
-                    </div>
-                    <h4 class="fw-bold text-secondary-dark">Plantillas Exclusivas</h4>
-                    <p class="text-muted">Diseños adaptados a cualquier tipo de celebración con opciones de personalización avanzadas.</p>
+        <div class="row g-4 g-lg-5">
+            <div class="col-12 col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                    <h4 class="fw-bold mb-3">Plantillas Exclusivas</h4>
+                    <p class="text-muted mb-0">Diseños inmersivos adaptados a bodas, XV años y galas, con opciones de personalización avanzada y animaciones fluidas.</p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card card-custom h-100 p-4">
-                    <div class="display-5 title-gold mb-3">
-                        <i class="fa-solid fa-clipboard-user"></i>
-                    </div>
-                    <h4 class="fw-bold text-secondary-dark">Control RSVP VIP</h4>
-                    <p class="text-muted">Recibe las confirmaciones de asistencia, acompañantes y restricciones alimentarias en tiempo real.</p>
+            <div class="col-12 col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-clipboard-user"></i></div>
+                    <h4 class="fw-bold mb-3">Control RSVP VIP</h4>
+                    <p class="text-muted mb-0">Recibe confirmaciones de asistencia al instante en tu propio panel de control. Olvídate de contar invitados manualmente.</p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card card-custom h-100 p-4">
-                    <div class="display-5 title-gold mb-3">
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </div>
-                    <h4 class="fw-bold text-secondary-dark">Envío por WhatsApp</h4>
-                    <p class="text-muted">Comparte el enlace personalizado de tu evento directamente por WhatsApp o redes sociales.</p>
+            <div class="col-12 col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper"><i class="fa-solid fa-qrcode"></i></div>
+                    <h4 class="fw-bold mb-3">Accesos por Código QR</h4>
+                    <p class="text-muted mb-0">Tus invitados recibirán un pase digital único y seguro para presentar en la entrada. Control total y elegancia garantizada.</p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- FOOTER -->
-<footer class="py-4 bg-dark text-white text-center">
+<!-- 3. GARANTÍA Y PRUEBA -->
+<section class="trial-section">
     <div class="container">
-        <p class="mb-0 text-muted">&copy; 2026 Link & Celebrate. Todos los derechos reservados.</p>
-    </div>
-</footer>
+        <div class="row align-items-center">
+            <div class="col-12 col-lg-5 mb-5 mb-lg-0 pe-lg-5">
+                <span class="trial-badge"><i class="fa-solid fa-shield-halved me-2"></i> Garantía de Satisfacción</span>
+                <h2 class="hero-title text-white mb-4" style="font-size: 3.5rem;">Crea, Prueba y Enamórate.</h2>
+                <p class="fs-5 text-light opacity-75 mb-4" style="line-height: 1.7;">
+                    Sabemos que planear un evento es estresante. Por eso, en Link & Celebrate <strong>no pagas nada por adelantado.</strong>
+                </p>
+                <p class="fs-6 text-light opacity-50 mb-0">
+                    Configura tu invitación, actívala y compártela. Te damos <strong>7 días completos de acceso premium</strong> para que pruebes el sistema. Si te encanta, realizas tu pago; si no, la invitación simplemente se desactiva sin compromisos.
+                </p>
+            </div>
 
-<!-- Bootstrap JS Bundle -->
+            <div class="col-12 col-lg-7">
+                <div class="glass-box">
+                    <h4 class="text-white mb-4 pb-3 border-bottom border-secondary">¿Cómo funciona?</h4>
+
+                    <div class="step-item">
+                        <div class="step-number">1</div>
+                        <div>
+                            <h5 class="text-white fw-bold mb-1">Elige y Personaliza</h5>
+                            <p class="text-light opacity-75 small mb-0">Selecciona una plantilla del catálogo, llena tus datos y envía tus fotos por WhatsApp a nuestro equipo.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item">
+                        <div class="step-number">2</div>
+                        <div>
+                            <h5 class="text-white fw-bold mb-1">Activa tu Semana Gratis</h5>
+                            <p class="text-light opacity-75 small mb-0">Te entregamos tu enlace personalizado listo para usar. Desde ese momento, tienes 7 días de acceso total sin costo.</p>
+                        </div>
+                    </div>
+
+                    <div class="step-item mb-0">
+                        <div class="step-number">3</div>
+                        <div>
+                            <h5 class="text-white fw-bold mb-1">Decide y Paga</h5>
+                            <p class="text-light opacity-75 small mb-0">Si el sistema de confirmaciones y el diseño superan tus expectativas, realizas el pago de tu plan para mantenerla activa hasta tu evento.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 4. CALL TO ACTION FINAL -->
+<section class="cta-section">
+    <div class="container">
+        <h2 class="hero-title" style="color: var(--primary-dark); font-size: 3rem;">¿Listo para deslumbrar a tus invitados?</h2>
+        <p class="text-muted fs-5 mb-5 mt-3">Únete hoy y comienza a diseñar la invitación que tu evento merece.</p>
+
+        <th:block sec:authorize="isAnonymous()">
+            <a th:href="@{/plantillas-catalogo}" class="btn-gold-solid fs-5 px-5 py-3">Empezar Ahora</a>
+        </th:block>
+
+        <th:block sec:authorize="isAuthenticated()">
+            <a th:href="@{/plantillas-catalogo}" class="btn-gold-solid fs-5 px-5 py-3">Ir al Catálogo</a>
+        </th:block>
+
+    </div>
+</section>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Acceso VIP | Link & Celebrate</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            transition: background-color 0.4s ease;
+        }
+        .scanner-container {
+            max-width: 450px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+        #reader {
+            border: none !important;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .status-box {
+            display: none;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body id="mainBody">
+
+<div class="text-center my-3">
+    <span class="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold mb-2">Seguridad VIP</span>
+    <h3 class="fw-bold m-0">Escáner de Acceso</h3>
+    <p class="text-white-50 small">Apunta la cámara al código QR del invitado</p>
+</div>
+
+<div class="scanner-container">
+    <!-- MENSAJE DE ERROR DE CÁMARA ELEGANTE -->
+    <div id="errorCamara" class="alert alert-danger d-none text-center py-3 rounded-3" role="alert">
+        <i class="fa-solid fa-triangle-exclamation mb-1 fs-4 d-block"></i>
+        <strong>Sin acceso a la cámara</strong>
+        <p class="small mb-0 mt-1">Verifica los permisos del navegador o conéctate mediante localhost.</p>
+    </div>
+
+    <div id="reader"></div>
+
+    <div id="resultadoBox" class="status-box">
+        <h1 id="iconoEstado" class="display-4 mb-2"></h1>
+        <h4 id="tituloEstado" class="fw-bold mb-1"></h4>
+        <p id="nombreInvitadoRes" class="fs-5 mb-1 text-dark fw-semibold"></p>
+        <p id="detallePases" class="small text-dark mb-3"></p>
+        <button onclick="reiniciarEscanner()" class="btn btn-dark w-100 fw-bold py-2 rounded-pill shadow-sm">
+            <i class="fa-solid fa-camera me-2"></i> Siguiente Escaneo
+        </button>
+    </div>
+</div>
+
+<footer class="text-center mt-4 text-white-50 small">
+    <p class="mb-0">&copy; 2026 Link & Celebrate &bull; Módulo de Recepción</p>
+</footer>
+
+<script>
+    let html5QrCode;
+    let escaneandoActivo = true;
+
+    function onScanSuccess(decodedText, decodedResult) {
+        if (!escaneandoActivo) return;
+        escaneandoActivo = false;
+        html5QrCode.stop().then(() => {
+            verificarTokenEnServidor(decodedText);
+        }).catch(err => console.error("Error al detener la cámara:", err));
+    }
+
+    function verificarTokenEnServidor(token) {
+        fetch(`/api/vip/validar/${token}`)
+            .then(response => response.json().then(data => ({ status: response.status, body: data })))
+            .then(result => {
+                const box = document.getElementById('resultadoBox');
+                const body = document.getElementById('mainBody');
+                const icono = document.getElementById('iconoEstado');
+                const titulo = document.getElementById('tituloEstado');
+                const nombre = document.getElementById('nombreInvitadoRes');
+                const detalle = document.getElementById('detallePases');
+
+                box.style.display = 'block';
+
+                if (result.status === 200 && result.body.exito) {
+                    body.style.backgroundColor = '#064e3b';
+                    box.style.backgroundColor = '#10b981';
+                    icono.innerHTML = '✅';
+                    titulo.textContent = '¡ACCESO AUTORIZADO!';
+                    nombre.textContent = result.body.nombre;
+                    detalle.textContent = `Pases autorizados: ${result.body.pases}`;
+                    nombre.style.color = '#000';
+                    detalle.style.color = '#000';
+                } else {
+                    body.style.backgroundColor = '#7f1d1d';
+                    box.style.backgroundColor = '#ef4444';
+                    icono.innerHTML = '⚠️';
+                    titulo.textContent = 'ACCESO DENEGADO';
+                    nombre.textContent = result.body.nombre || "Desconocido";
+                    detalle.textContent = result.body.mensaje;
+                    nombre.style.color = '#fff';
+                    detalle.style.color = '#fff';
+                }
+            })
+            .catch(error => {
+                console.error('Error de red:', error);
+                reiniciarEscanner();
+            });
+    }
+
+    function reiniciarEscanner() {
+        const box = document.getElementById('resultadoBox');
+        const body = document.getElementById('mainBody');
+        box.style.display = 'none';
+        body.style.backgroundColor = '#0f172a';
+
+        escaneandoActivo = true;
+        html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            onScanSuccess
+        ).catch(err => console.error("No se pudo reiniciar la cámara:", err));
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        html5QrCode = new Html5Qrcode("reader");
+        html5QrCode.start(
+            { facingMode: "environment" },
+            { fps: 10, qrbox: { width: 250, height: 250 } },
+            onScanSuccess
+        ).catch(err => {
+            document.getElementById('errorCamara').classList.remove('d-none');
+            document.getElementById('reader').style.display = 'none';
+            console.error(err);
+        });
+    });
+</script>
+</body>
+</html>
