@@ -37,38 +37,30 @@ public class EventoController {
             Principal principal,
             Model model) {
 
-        // 1. Obtener el usuario autenticado actualmente
+        // 1. Obtener el usuario autenticado
         String email = principal.getName();
         Usuarios usuario = usuariosRepository.findByGmail(email).orElse(null);
 
         if (usuario != null) {
-            // 2. Crear y guardar la invitación real en la base de datos
+            // 2. Guardar la invitación usando únicamente los métodos seguros de tu modelo
             Invitaciones nuevaInvitacion = new Invitaciones();
             nuevaInvitacion.setTituloEvento(nombreEvento);
-            // Si tienes campos de fecha/lugar adicionales en tu modelo, los puedes setear aquí:
-            // nuevaInvitacion.setFechaEvento(fechaEvento);
-            // nuevaInvitacion.setLugarEvento(lugarEvento);
             nuevaInvitacion.setTipoPaquete(paquete);
-            nuevaInvitacion.setEstadoPago("Pendiente"); // Empieza pendiente hasta que validen su pago/fotos
+            nuevaInvitacion.setEstadoPago("Pendiente");
             nuevaInvitacion.setFkIdUsuario(usuario.getUsuarioId());
 
             invitacionesRepository.save(nuevaInvitacion);
-            System.out.println("¡Evento guardado con éxito en la BD para el usuario: " + email + "!");
         }
 
-        // 3. NÚMERO DE WHATSAPP DE SOPORTE
+        // 3. Generar enlace de WhatsApp
         String numeroSoporte = "50236095150";
-
-        // 4. ARMAR EL MENSAJE AUTOMÁTICO PARA WHATSAPP
         String mensaje = "¡Hola equipo de Link & Celebrate! 🥂\n\n" +
                 "Acabo de configurar mi evento: *" + nombreEvento + "*.\n" +
                 "Elegí la Plantilla #" + plantillaId + " (Paquete " + paquete.toUpperCase() + ").\n\n" +
                 "Les escribo para enviarles las fotografías y la canción para mi invitación.";
 
-        String mensajeCodificado = URLEncoder.encode(mensaje, StandardCharsets.UTF_8);
-        String urlWhatsapp = "https://wa.me/" + numeroSoporte + "?text=" + mensajeCodificado;
+        String urlWhatsapp = "https://wa.me/" + numeroSoporte + "?text=" + URLEncoder.encode(mensaje, StandardCharsets.UTF_8);
 
-        // 5. MANDAMOS LOS DATOS A LA PANTALLA DE ÉXITO
         model.addAttribute("nombreEvento", nombreEvento);
         model.addAttribute("urlWhatsapp", urlWhatsapp);
 
