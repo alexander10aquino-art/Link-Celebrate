@@ -71,6 +71,7 @@ public class SecurityConfig {
                 )
                 .formLogin(login -> login
                         .loginPage("/login")
+                        .defaultSuccessUrl("/catalogo", true) // <-- REDIRECCIÓN CORREGIDA
                         .permitAll()
                 )
                 .logout(logout -> logout
