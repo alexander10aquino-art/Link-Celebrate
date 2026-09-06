@@ -333,15 +333,15 @@
 </div>
 
 <!-- ========================================== -->
-<!-- AQUÍ ESTÁ LA ALERTA QUE FALTABA EN EL HTML -->
+<!-- ALERTA DINÁMICA DESDE EL CONTROLADOR -->
 <!-- ========================================== -->
-<div th:if="${param.error != null and param.error[0] == 'activo'}" class="container mt-4 position-relative z-3">
+<div th:if="${mensajeAlerta}" class="container mt-4 position-relative z-3">
     <div class="alert alert-warning alert-dismissible fade show shadow-sm" role="alert" style="background-color: #fffbeb; border: 1px solid #fde68a; color: #b45309; border-radius: 16px;">
         <div class="d-flex align-items-center">
             <i class="fa-solid fa-triangle-exclamation fs-4 me-3"></i>
             <div>
                 <strong>¡Acción denegada!</strong> <br>
-                <span>Ya tienes un evento activo. Por ahora, solo puedes gestionar una invitación a la vez. Ve a tu Dashboard para administrarla.</span>
+                <span th:text="${mensajeAlerta}">Debes elegir una plantilla primero.</span>
             </div>
         </div>
         <button type="button" class="btn-close mt-1" data-bs-dismiss="alert" aria-label="Close"></button>
