@@ -35,7 +35,7 @@ public class DashboardController {
             model.addAttribute("usuario", usuario);
             List<Invitaciones> misEventos = invitacionesRepository.findByFkIdUsuario(usuario.getUsuarioId());
 
-            // 1. VALIDACIÓN UX: Si no tiene eventos, no entra al dashboard y lo mandamos al catálogo
+            // 1. VALIDACIÓN UX: Si no tiene eventos, no entra al dashboard y lo mandamos al catálogo con alerta
             if (misEventos == null || misEventos.isEmpty()) {
                 redirectAttributes.addFlashAttribute("mensajeAlerta", "¡Aún no tienes un evento activo! Por favor, elige una plantilla para comenzar.");
                 return "redirect:/plantillas-catalogo";

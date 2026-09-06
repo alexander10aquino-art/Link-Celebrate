@@ -11,7 +11,6 @@ import java.nio.charset.StandardCharsets;
 @Controller
 public class EventoController {
 
-    // Cambiamos la ruta para que no choque con el FormularioController que ya tenías
     @PostMapping("/guardar-evento-vip")
     public String guardarInvitacion(
             @RequestParam("nombreEvento") String nombreEvento,
@@ -25,13 +24,12 @@ public class EventoController {
             @RequestParam("paquete") String paquete,
             Model model) {
 
-        // 1. AQUÍ VA TU LÓGICA PARA GUARDAR EN LA BASE DE DATOS
         System.out.println("Nuevo evento recibido: " + nombreEvento);
 
-        // 2. NÚMERO DE WHATSAPP DE SOPORTE
+        // NÚMERO DE WHATSAPP DE SOPORTE
         String numeroSoporte = "50236095150";
 
-        // 3. ARMAR EL MENSAJE AUTOMÁTICO PARA WHATSAPP
+        // ARMAR EL MENSAJE AUTOMÁTICO PARA WHATSAPP
         String mensaje = "¡Hola equipo de Link & Celebrate! 🥂\n\n" +
                 "Acabo de configurar mi evento: *" + nombreEvento + "*.\n" +
                 "Elegí la Plantilla #" + plantillaId + " (Paquete " + paquete.toUpperCase() + ").\n\n" +
@@ -40,7 +38,7 @@ public class EventoController {
         String mensajeCodificado = URLEncoder.encode(mensaje, StandardCharsets.UTF_8);
         String urlWhatsapp = "https://wa.me/" + numeroSoporte + "?text=" + mensajeCodificado;
 
-        // 4. MANDAMOS LOS DATOS A LA PANTALLA DE ÉXITO
+        // MANDAMOS LOS DATOS A LA PANTALLA DE ÉXITO
         model.addAttribute("nombreEvento", nombreEvento);
         model.addAttribute("urlWhatsapp", urlWhatsapp);
 
