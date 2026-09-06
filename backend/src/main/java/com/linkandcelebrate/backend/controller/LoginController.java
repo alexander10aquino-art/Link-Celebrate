@@ -10,4 +10,9 @@ public class LoginController {
     public String login() {
         return "login"; // Retorna src/main/resources/templates/login.html
     }
+
+    @GetMapping("/catalogo")
+    public String mostrarCatalogo() {
+        return "plantillas-catalogo"; // Retorna src/main/resources/templates/plantillas-catalogo.html
+    }
 }
