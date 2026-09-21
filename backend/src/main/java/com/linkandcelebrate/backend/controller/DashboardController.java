@@ -35,14 +35,14 @@ public class DashboardController {
             model.addAttribute("usuario", usuario);
             List<Invitaciones> misEventos = invitacionesRepository.findByFkIdUsuario(usuario.getUsuarioId());
 
-            // 1. VALIDACIÓN UX: Si no tiene eventos, no entra al dashboard y lo mandamos al catálogo con alerta
+            // 1. VALIDACIÓN UX: Si no tiene eventos, lo mandamos al catálogo con alerta
             if (misEventos == null || misEventos.isEmpty()) {
                 redirectAttributes.addFlashAttribute("mensajeAlerta", "¡Aún no tienes un evento activo! Por favor, elige una plantilla para comenzar.");
                 return "redirect:/plantillas-catalogo";
             }
 
-            // 2. Si pasa la validación, cargamos sus datos
-            Invitaciones invitacionActual = misEventos.get(0);
+            // 2. SOLUCIÓN: Tomamos el ÚLTIMO elemento de la lista (el más reciente) usando size() - 1
+            Invitaciones invitacionActual = misEventos.get(misEventos.size() - 1);
             model.addAttribute("invitacion", invitacionActual);
 
             // Estadísticas
