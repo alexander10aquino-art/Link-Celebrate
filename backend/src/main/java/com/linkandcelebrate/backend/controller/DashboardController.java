@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
+import java.util.Comparator;
 import java.util.List;
 
 @Controller
@@ -35,14 +36,15 @@ public class DashboardController {
             model.addAttribute("usuario", usuario);
             List<Invitaciones> misEventos = invitacionesRepository.findByFkIdUsuario(usuario.getUsuarioId());
 
-            // 1. VALIDACIÓN UX: Si no tiene eventos, lo mandamos al catálogo con alerta
             if (misEventos == null || misEventos.isEmpty()) {
                 redirectAttributes.addFlashAttribute("mensajeAlerta", "¡Aún no tienes un evento activo! Por favor, elige una plantilla para comenzar.");
                 return "redirect:/plantillas-catalogo";
             }
 
-            // 2. SOLUCIÓN: Tomamos el ÚLTIMO elemento de la lista (el más reciente) usando size() - 1
-            Invitaciones invitacionActual = misEventos.get(misEventos.size() - 1);
+            // SOLUCIÓN DEFINITIVA: Ordenamos la lista forzosamente para que el ID más grande (el más nuevo) quede de primero.
+            misEventos.sort(Comparator.comparing(Invitaciones::getIdInvitacion).reversed());
+            Invitaciones invitacionActual = misEventos.get(0);
+
             model.addAttribute("invitacion", invitacionActual);
 
             // Estadísticas
@@ -64,7 +66,6 @@ public class DashboardController {
             model.addAttribute("totalAcompanantes", totalAcompanantes);
 
         } else {
-            // Si la sesión expiró o el usuario no existe, lo mandamos al login
             return "redirect:/login";
         }
 
